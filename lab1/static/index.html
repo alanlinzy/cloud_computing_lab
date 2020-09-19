@@ -53,7 +53,7 @@ async function getEvent(){
 				"<\div>\n";
       
    }
-   let d = data['events']
+   let d = JSON.parse(data).events
    event_div.innerHTML = intext;
 }
 
