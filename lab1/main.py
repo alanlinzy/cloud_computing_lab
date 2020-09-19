@@ -23,7 +23,7 @@ def to_json(events):
         content = {'id':e.id,'name':e['name'],'date':e['date']}
         payload.append(content)
         content = {}
-    event_l = {'event':payload}
+    event_l = {'events':payload}
     print(json.dumps(event_l))
     return json.dumps(event_l)
 
