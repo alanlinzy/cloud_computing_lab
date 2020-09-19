@@ -21,7 +21,7 @@ function reqJSON(method, url, data) {
   return new Promise((resolve, reject) => {
     let xhr = new XMLHttpRequest();
     xhr.open(method, url);
-	xhr.setRequestHeader('Content-type','qpplication/json')
+	xhr.setRequestHeader('Content-type','application/json')
     xhr.responseType = 'json';
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
