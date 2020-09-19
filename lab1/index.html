@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>My Lovely One-Page App</title>
+<script>
+function parseDate(datestr) {
+  const [y, m, d] = datestr.split('-');
+  return new Date(Number.parseInt(y), Number.parseInt(m)-1, Number.parseInt(d));
+}
+function testAlert() {
+            alert('警告框！！！ ');
+        }
+function createEvent(){
+   //const nameStr = document.getElementById('nameInput').value;
+   //const dateStr = document.getElementById('dateInput').value;
+   //var data = parseDate(datestr) ;
+   testAlert();
+}
+
+function reqJSON(method, url, data) {
+  return new Promise((resolve, reject) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.responseType = 'json';
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve({status: xhr.status, data: xhr.response});
+      } else {
+        reject({status: xhr.status, data: xhr.response});
+      }
+    };
+    xhr.onerror = () => {
+      reject({status: xhr.status, data: xhr.response});
+    };
+    xhr.send(data);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  reqJSON('GET', '/events')
+  .then(({status, data}) => {
+    // Use the *data* argument to change what we see on the page.
+    // It will look something like this:
+    // {
+    //   "events": [
+    //     {"name": "Grandma's Birthday", "date": "08-05"},
+	   //     {"name": "Independence Day", "date": "07-04"}
+    //   ]
+    // }
+
+    // There are better ways, but this is illustrative of the concept:
+    let html = '';
+    for (let event of data.events) {
+      html += `${event.name}: ${event.date}<br>`;
+    }
+    document.getElementById('events').innerHTML = html;
+  })
+  .catch(({status, data}) => {
+    // Display an error.
+    document.getElementById('events').innerHTML = 'ERROR: ' +
+      JSON.stringify(data);
+  });
+});
+</script>
+</head>
+<body>
+
+<form onsubmit="return Flase">
+  Event name: <input type="text" id="nameInput">
+  date: <input type="text" id="dateInput">
+  <button onclick="createEvent();" id = 'btn'>create</button>
+</form>
+
+<button onclick="testAlert();">警告</button>
+<div id="events"></div>
+</body>
+</html>
