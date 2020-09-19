@@ -46,7 +46,7 @@ function reqJSON(method, url, data) {
   });
 }
 async function getEvent(){
-   let {data} = await reqJSON('GET','/events');
+   let {data} = await reqJSON(' GET','/events');
    const event_div = document.getElementById('events');
    event_div.innerHTML = '';
    let intext = ''
