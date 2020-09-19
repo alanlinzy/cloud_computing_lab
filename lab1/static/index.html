@@ -40,7 +40,7 @@ function reqJSON(method, url, data) {
   });
 }
 async function getEvent(){
-   let {data} = await reqJson('GET','/events');
+   let {data} = await reqJSON('GET','/events');
    const event_div = document.getElementById('events');
    event_div.innerHTML = '';
    let intext = ''
@@ -57,12 +57,12 @@ async function getEvent(){
 
 
 async function delEvent(key){
-   await reqJson('DELETE','/event/${key}');
+   await reqJSON('DELETE','/event/${key}');
    await getEvent();
 }
 
 async function createEvent(){
-   await reqJson('POST','/event',{
+   await reqJSON('POST','/event',{
       name:document.getElementById('nameInput').value,
 	  date:document.getElementById('dateInput').value,
    });
