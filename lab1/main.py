@@ -46,7 +46,7 @@ def fetch_events(limit=None):
     else:
         query = DS.query(kind = 'Event')
         query.order = ['date']
-        evnets = query.fetch()
+        events = query.fetch()
     return events
 
 @app.route('/')
