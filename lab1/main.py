@@ -53,7 +53,12 @@ def fetch_events(limit=None):
 @app.route('/index.html',methods = ['GET'])
 def root():
     print('root')
-    return send_from_directory('/static','index.html')
+    
+    try:
+        return send_from_directory('static','index.html',as_attachment=True)
+    except:
+        print('文件不存在')
+        return '文件不存在'
 
 @app.route('/events',methods = ['GET'])
 def getEvent():
