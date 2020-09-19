@@ -54,7 +54,7 @@ async function getEvent(){
       intext += "<div class='event' key="+ e['id'] +">" +
 	            "<a class ='ename'>name:"+ e['name'] +"</a>"+
 				"<a class ='edate'>date:"+ e['date'] +"</a>"+
-				"<button class= 'delbtn'  onclick = \'delEvent(this.parentNode.getAttribute(\'key\'))\'>delete</button>"+
+				"<button class= 'delbtn'  onclick = \'delEvent(this.parentNode.getAttribute(key))\'>delete</button>"+
 				"<\div>\n";
       
    }
