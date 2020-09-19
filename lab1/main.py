@@ -34,7 +34,7 @@ def put_event(name,date_str):
     return
 
 def delete_event(del_id):
-    del_k = DS.key(EVENT, parent=ROOT, int(del_id))
+    del_k = DS.key(EVENT, parent=ROOT, del_id)
     DS.delete(del_k)
     return
 
