@@ -36,7 +36,8 @@ function reqJSON(method, url, data) {
 	  console.error('xhr with error:',xhr);
       reject({status: xhr.status,statusText:xhr.statusText, data: xhr.response});
     };
-    xhr.send(JSON.stringify(data));
+    //xhr.send(JSON.stringify(data));
+	xhr.send(data);
   });
 }
 async function getEvent(){
