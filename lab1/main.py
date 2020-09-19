@@ -53,7 +53,7 @@ def fetch_events(limit=None):
 @app.route('/index.html',methods = ['GET'])
 def root():
     print('root')
-    return send_from_directory('static','index.html')
+    return send_from_directory('/static','index.html')
 
 @app.route('/events',methods = ['GET'])
 def getEvent():
