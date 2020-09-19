@@ -27,7 +27,7 @@ def to_json(events):
     print(json.dumps(event_l))
     return json.dumps(event_l)
 
-def put_events(name,date_str):
+def put_event(name,date_str):
     entity = datastore.Entity(key = DS.key(EVENT,parent=ROOT))
     entity.update({'name':name,'date':date_str})
     DS.put(entity)
@@ -59,7 +59,7 @@ def root():
 @app.route('/events',methods = ['GET'])
 def getEvent():
     print('GET')
-    events = fetch_event()
+    events = fetch_events()
     data = to_json(events)
     return jsonify(data)
 
@@ -68,7 +68,7 @@ def postEvent():
     print('POST')
     name,date = request.json['name'], request.json['date']
     print(name,date)
-    put_evnets(name,date)
+    put_event(name,date)
     return ''
 
 @app.route('/event',methods = ['DELETE'])
