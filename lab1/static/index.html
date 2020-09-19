@@ -44,10 +44,10 @@ async function getEvent(){
    const event_div = document.getElementById('events');
    event_div.innerHTML = '';
    let intext = ''
-   for (let e of data.events ||[]){
-      intext += "<div class='event' key="+ e.id +">" +
-	            "<a class ='ename'>name:"+ e.name +"</a>"+
-				"<a class ='edate'>date:"+ e.date +"</a>"+
+   for (let e of data['events'] ||[]){
+      intext += "<div class='event' key="+ e['id'] +">" +
+	            "<a class ='ename'>name:"+ e['name'] +"</a>"+
+				"<a class ='edate'>date:"+ e['date'] +"</a>"+
 				"<button onclick = 'delEvent(this.parentNode.getAttribute('key'))'>delete</button>"+
 				"<\div>\n";
       
