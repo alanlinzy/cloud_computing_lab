@@ -51,10 +51,12 @@ def fetch_events(limit=None):
 
 @app.route('/index.html')
 def root():
+    print('root')
     return send_from_directory('static','index.html')
 
 @app.route('/events')
 def getEvent():
+    print('GET')
     events = fetch_event()
     data = to_json(events)
     return jsonify(data)
@@ -69,6 +71,7 @@ def postEvent():
 
 @app.route('/event',methods = ['DELETE'])
 def delEvent():
+    print('DEL')
     del_id = request.json['id']
     delete_event(del_id)
     return ''
