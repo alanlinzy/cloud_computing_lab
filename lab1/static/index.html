@@ -52,8 +52,8 @@ async function getEvent(){
    let intext = ''
    for (let e of JSON.parse(data).events ||[]){
       intext += "<div class='event' key="+ e['id'] +">" +
-	            "<a class ='ename'>name:"+ e['name'] +"</a>"+
-				"<a class ='edate'>date:"+ e['date'] +"</a>"+
+	            "<a class ='ename'>name:"+ e['name'] +"    </a>"+
+				"<a class ='edate'>date:"+ e['date'] +"    </a>"+
 				"<button class= 'delbtn'  onclick = \'delEvent("+ e['id'] +")\'>delete</button>"+
 				"<\div>\n";
       
