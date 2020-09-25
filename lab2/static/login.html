@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+<title>login</title>
+<
+</head>
+<body>
+
+<form >
+  username: <input type="text" id="nameInput">
+  <br>
+  password: <input type="text" id="passInput">
+</form>
+<button id = 'loginbtn'>login</button>
+<button id = 'registerbtn'>register</button>
+
+<div id="pass"></div>
+</body>
+
+<script>
+
+
+function reqJSON(method, url, data) {
+  return new Promise((resolve, reject) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+	xhr.setRequestHeader('Content-type','application/json')
+    xhr.responseType = 'json';
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve({status: xhr.status, statusText:xhr.statusText, data: xhr.response});
+      } else {
+	    console.error('xhr with error:',xhr);
+        reject({status: xhr.status, statusText:xhr.statusText, data: xhr.response});
+      }
+    };
+    xhr.onerror = () => {
+	  console.error('xhr with error:',xhr);
+      reject({status: xhr.status,statusText:xhr.statusText, data: xhr.response});
+    };
+    xhr.send(JSON.stringify(data));
+	//xhr.send(data);
+  });
+}
+async function getlo(){
+   let {data} = await reqJSON('GET','/login');
+   const event_div = document.getElementById('pass');
+   event_div.innerHTML = '';
+   let intext = ''
+   for (let e of JSON.parse(data).events ||[]){
+     
+      intext += "<div class='event' key="+ e['id'] +">" +
+	            "<a class ='ename'>name:"+ e['name'] +"\t</a>"+
+				"<a class ='edate'>date:"+ e['pwd'] +"\t</a>"+
+				"<\div>\n";
+      
+   }
+   //let d = JSON.parse(data).events
+   event_div.innerHTML = intext;
+   renderTimers();
+}
+
+
+
+
+async function login(){
+   await reqJSON('POST','/login',{
+      name:document.getElementById('nameInput').value,
+	  date:document.getElementById('passInput').value,
+   });
+   await getlo();
+}
+
+async function register(){
+   await reqJSON('POST','/register',{
+      name:document.getElementById('nameInput').value,
+	  date:document.getElementById('passInput').value,
+   });
+   await getlo();
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+   document.getElementById('loginbtn').addEventListener('click',login);
+   document.getElementById('registerbtn').addEventListener('click',register);
+   getlo();
+
+});
+
+
+
+</script>
+</html>
