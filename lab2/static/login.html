@@ -50,8 +50,8 @@ async function getlo(){
    for (let e of JSON.parse(data).events ||[]){
      
       intext += "<div class='event' key="+ e['id'] +">" +
-	            "<a class ='ename'>name:"+ e['name'] +"\t</a>"+
-				"<a class ='edate'>date:"+ e['pwd'] +"\t</a>"+
+	            "<a class ='ename'>user:"+ e['user'] +"\t</a>"+
+				"<a class ='edate'>pwd:"+ e['pwd'] +"\t</a>"+
 				"<\div>\n";
       
    }
