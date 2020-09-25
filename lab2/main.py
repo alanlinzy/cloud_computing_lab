@@ -127,8 +127,8 @@ def getPwd():
 @app.route('/login',methods = ['POST'])
 def postLogin():
     print('POST login')
+    print(request.json['user'],request.json['pwd'])
     user,pwd = request.json['user'], request.json['pwd']
-    print(user,pwd)
     check_user(user,pwd)
     session = {'session':'cookie','msg':'?'}
     return redirect('static/index.html',code = 200)
@@ -136,8 +136,8 @@ def postLogin():
 @app.route('/register',methods = ['POST'])
 def postRegister():
     print('POST register')
+    print(request.json['user'],request.json['pwd'])
     user,pwd = request.json['user'], request.json['pwd']
-    print(user,pwd)
     put_user(name,date)
     return ''
 
