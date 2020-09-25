@@ -136,6 +136,8 @@ def postLogin():
 @app.route('/register',methods = ['POST'])
 def postRegister():
     print('POST register')
+    print(request)
+    print(request.json['pwd'])
     print(request.json['user'],request.json['pwd'])
     user,pwd = request.json['user'], request.json['pwd']
     put_user(name,date)
