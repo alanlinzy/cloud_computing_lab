@@ -1,6 +1,7 @@
 import os
 import datetime
 import json
+import bcrypt
 
 from flask import Flask, render_template, request, jsonify,send_from_directory,redirect
 from google.cloud import datastore
@@ -9,11 +10,16 @@ app = Flask(__name__)
 
 DS = datastore.Client()
 EVENT = 'Event'
+USERINFO = 'Login'
+USERSESS = 'Sess'
+SALT = 10
 
 if os.getenv('GAE_ENV','').startswith('standard'):
     ROOT = DS.key('Entities','root')
+    USER = DS.key('Entities','user_root')
 else:
     ROOT = DS.key('Entities','dev')
+    USER = DS.key('Entities','user_dev')
     
 def to_json(events):
     payload = []
@@ -85,14 +91,19 @@ def delEvent():
     return ''
 
 def check_user(user,pwd):#unfin
+    query = DS.query(kind = USERINFO)
+    query.add_filter('done', '=', False)
+    pwd_hash = query.fetch()
+    print('pwd_hash',pwd_hash)
     if pwd == pwd:
         return True
     else:
         return False
 
 def put_user(user,pwd):
-    entity = datastore.Entity(key = DS.key(EVENT,parent=ROOT))
-    entity.update({'user':user,'pwd':pwd})
+    entity = datastore.Entity(key = DS.key(USERINFO,parent=USER))
+    pwd_hash = bcrypt.hashpw(pwd, bcrypt.gensalt(SALT))
+    entity.update({'user':user,'pwd':pwd_hash})
     DS.put(entity)
     return
 
