@@ -56,6 +56,9 @@ def fetch_events(limit=None):
     return events
 
 def checkCookies(cookie):#unfin
+    query = DS.query(kind = USERSESS)
+    query.add_filter('cookie', '=', cookie)
+    pwd_hash = query.fetch()
     return False
 
 @app.route('/')
@@ -63,7 +66,7 @@ def checkCookies(cookie):#unfin
 def root():
     print(request.cookies)
     if not checkCookies(request.cookies):#check session
-        return redirect('/login.html',code = 302)
+        return redirect('static/login.html',code = 302)
     print('root')
     #return render_template("index.html",user = 'back')  
     return send_from_directory('static','index.html')
@@ -92,7 +95,7 @@ def delEvent():
 
 def check_user(user,pwd):#unfin
     query = DS.query(kind = USERINFO)
-    query.add_filter('done', '=', False)
+    query.add_filter('user', '=', user)
     pwd_hash = query.fetch()
     print('pwd_hash',pwd_hash)
     # vaild? expire? empty?
@@ -140,7 +143,7 @@ def postRegister():
     print(request.json['pwd'])
     print(request.json['user'],request.json['pwd'])
     user,pwd = request.json['user'], request.json['pwd']
-    put_user(name,date)
+    put_user(user,pwd)
     return ''
 
 
