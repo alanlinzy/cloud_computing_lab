@@ -63,7 +63,7 @@ def checkCookies(cookie):#unfin
 def root():
     print(request.cookies)
     if not checkCookies(request.cookies):#check session
-        return redirect('static/login.html',code = 302)
+        return redirect('/login.html',code = 302)
     print('root')
     #return render_template("index.html",user = 'back')  
     return send_from_directory('static','index.html')
