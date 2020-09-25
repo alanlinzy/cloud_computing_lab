@@ -49,14 +49,14 @@ def fetch_events(limit=None):
         events = query.fetch()
     return events
 
-def checkCookies(cookie):
-    pass
+def checkCookies(cookie):#unfin
+    return False
 
 @app.route('/')
 @app.route('/index.html',methods = ['GET'])
 def root():
     print(request.cookies)
-    if True:#check session
+    if not checkCookies(request.cookies):#check session
         return redirect('static/login.html',code = 302)
     print('root')
     #return render_template("index.html",user = 'back')  
@@ -64,14 +64,14 @@ def root():
 
 @app.route('/events',methods = ['GET'])
 def getEvent():
-    print('GET')
+    print('GET event')
     events = fetch_events()
     data = to_json(events)
     return jsonify(data)
 
 @app.route('/event',methods = ['POST'])
 def postEvent():
-    print('POST')
+    print('POST event')
     name,date = request.json['name'], request.json['date']
     print(name,date)
     put_event(name,date)
@@ -79,9 +79,54 @@ def postEvent():
 
 @app.route('/event',methods = ['DELETE'])
 def delEvent():
-    print('DEL')
+    print('DEL event')
     del_id = request.json['id']
     delete_event(del_id)
+    return ''
+
+def check_user(user,pwd):#unfin
+    if pwd == pwd:
+        return True
+    else:
+        return False
+
+def put_user(user,pwd):
+    entity = datastore.Entity(key = DS.key(EVENT,parent=ROOT))
+    entity.update({'user':user,'pwd':pwd})
+    DS.put(entity)
+    return
+
+@app.route('/login',methods = ['GET'])
+def getPwd():
+    print('GET  login')
+    query = DS.query(kind = 'User')
+    pwd = query.fetch()
+    payload = []
+    content = {}
+    for p in pwd:
+        content = {'id':p.id,'user':p['user'],'pwd':e['pwd']}
+        payload.append(content)
+        content = {}
+    pwd_l = {'pwds':payload}
+    print(json.dumps(pwd_l))
+    data = json.dumps(pwd_l)
+    return jsonify(data)
+
+@app.route('/login',methods = ['POST'])
+def postLogin():
+    print('POST login')
+    user,pwd = request.json['user'], request.json['pwd']
+    print(user,pwd)
+    check_user(user,pwd)
+    session = {'session':'cookie','msg':'?'}
+    return 'cookie'
+
+@app.route('/register',methods = ['POST'])
+def postRegister():
+    print('POST register')
+    user,pwd = request.json['user'], request.json['pwd']
+    print(user,pwd)
+    put_user(name,date)
     return ''
 
 
