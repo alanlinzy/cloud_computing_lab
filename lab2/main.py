@@ -95,7 +95,8 @@ def check_user(user,pwd):#unfin
     query.add_filter('done', '=', False)
     pwd_hash = query.fetch()
     print('pwd_hash',pwd_hash)
-    if pwd == pwd:
+    # vaild? expire? empty?
+    if bcrypt.hashpw(pwd, pwd_hash) == pwd_hash:
         return True
     else:
         return False
@@ -130,7 +131,7 @@ def postLogin():
     print(user,pwd)
     check_user(user,pwd)
     session = {'session':'cookie','msg':'?'}
-    return 'cookie'
+    return redirect('static/index.html',code = 200)
 
 @app.route('/register',methods = ['POST'])
 def postRegister():
