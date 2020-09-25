@@ -7,9 +7,9 @@
 <body>
 
 <form >
-  username: <input type="text" id="nameInput">
+  username: <input type="text" id="userInput">
   <br>
-  password: <input type="text" id="passInput">
+  password: <input type="text" id="pwdInput">
 </form>
 <button id = 'loginbtn'>login</button>
 <button id = 'registerbtn'>register</button>
@@ -65,16 +65,16 @@ async function getlo(){
 
 async function login(){
    await reqJSON('POST','/login',{
-      name:document.getElementById('nameInput').value,
-	  date:document.getElementById('passInput').value,
+      user:document.getElementById('userInput').value,
+	  pwd:document.getElementById('pwdInput').value,
    });
    await getlo();
 }
 
 async function register(){
    await reqJSON('POST','/register',{
-      name:document.getElementById('nameInput').value,
-	  date:document.getElementById('passInput').value,
+      user:document.getElementById('userInput').value,
+	  pwd:document.getElementById('pwdInput').value,
    });
    await getlo();
 }
