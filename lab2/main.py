@@ -66,7 +66,7 @@ def checkCookies(cookie):#unfin
     sess_db = list(query.fetch())
     if len(sess_db) > 0:
         print(sess_db)
-        if (now - sess_db['exp']).days <=1:#[0]
+        if (now - sess_db['exp'].replace(tzinfo = None)).days <=1:#[0]
         
             return True
     return False
@@ -110,7 +110,7 @@ def check_sess(user,pwd_hash):
     query.add_filter('pwd', '=', pwd_hash)
     sess = list(query.fetch())
     now = datetime.datetime.now()
-    exp = sess[0]['exp']
+    exp = sess[0]['exp'].replace(tzinfo = None)#TypeError: can't subtract offset-naive and offset-aware datetimes
     print(exp)
     print(sess)
     
