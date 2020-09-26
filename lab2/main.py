@@ -207,7 +207,7 @@ def postLogin():
         session = get_sess(user,pwd)
         print(session)
         resp = make_response(redirect('static/index.html',code = 302))
-        resp.set_cookie('sess',session)
+        resp.set_cookie('sess',str(session))
         return resp
     else:
         put_sess(user,pwd)
