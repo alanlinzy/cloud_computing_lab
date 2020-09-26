@@ -157,6 +157,7 @@ def put_sess(user,pwd):
     return
 
 def get_sess(user,pwd):
+    pwd_hash = check_exist(user)
     query = DS.query(kind = USERSESS)
     query.add_filter('user', '=', user)
     query.add_filter('pwd', '=', pwd_hash)
