@@ -102,7 +102,7 @@ def check_user(user,pwd):#unfin
     pwd_hash = list(query.fetch())
     print('pwd_hash',pwd_hash)
     # vaild? expire? empty?
-    if bcrypt.hashpw(pwd, pwd_hash) == pwd_hash:
+    if bcrypt.hashpw(pwd.encode("utf8"), pwd_hash) == pwd_hash:
         return True
     else:
         return False
@@ -123,10 +123,11 @@ def put_user(user,pwd):
         
     
         entity = datastore.Entity(key = DS.key(USERINFO,parent=USER))
-        pwd_hash = bcrypt.hashpw(pwd, bcrypt.gensalt(SALT))
+        #Unicode-objects must be encoded before hashing
+        pwd_hash = bcrypt.hashpw(pwd.encode("utf8"), bcrypt.gensalt(SALT))
         entity.update({'user':user,'pwd':pwd_hash})
         DS.put(entity)
-        return
+        return True
     else:
         print('exist')
         return False
