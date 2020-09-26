@@ -57,13 +57,13 @@ def fetch_events(limit=None):
     return events
 
 def checkCookies(cookie):#unfin
-    query = DS.query(kind = USERSESS)
-    query.add_filter( id , '=', cookie)
+    if cookie == None:
+        return False
+    query = DS.query(kind = USERSESS,cookie)
     print(cookie)
     now = datetime.datetime.now()
     sess_db = list(query.fetch())
     if len(sess_db) > 0:
-        
         print(sess_db)
         if (now - sess_db['exp']).days <=1:#[0]
         
