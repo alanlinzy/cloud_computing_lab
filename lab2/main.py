@@ -59,14 +59,16 @@ def fetch_events(limit=None):
 def checkCookies(cookie):#unfin
     query = DS.query(kind = USERSESS)
     query.add_filter( id , '=', cookie)
-    sess_db = list(query.fetch())
+    print(cookie)
     now = datetime.datetime.now()
-    print(sess_db)
-    if len(sess_db) > 0  and (now - sess_db['exp']).days <=1:#[0]
+
+    if len(query.fetch()) > 0:
+        sess_db = list(query.fetch())
+        print(sess_db)
+        if (now - sess_db['exp']).days <=1:#[0]
         
-        return True
-    else:
-        return False
+            return True
+    return False
     
 
 @app.route('/')
