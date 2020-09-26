@@ -111,18 +111,25 @@ def check_exist(user):#unfin
     query = DS.query(kind = USERINFO)
     query.add_filter('user', '=', user)
     pwd_hash = list(query.fetch())
-    print(pwd_hash[0]['pwd'])
-    return False
+    if len(pwd_hash) == 0:
+        return False
+    else:
+        print(pwd_hash[0]['pwd'])
+        return True
     
 
 def put_user(user,pwd):
-    check_exist(user)
+    if not check_exist(user):
+        
     
-    entity = datastore.Entity(key = DS.key(USERINFO,parent=USER))
-    pwd_hash = bcrypt.hashpw(pwd, bcrypt.gensalt(SALT))
-    entity.update({'user':user,'pwd':pwd_hash})
-    DS.put(entity)
-    return
+        entity = datastore.Entity(key = DS.key(USERINFO,parent=USER))
+        pwd_hash = bcrypt.hashpw(pwd, bcrypt.gensalt(SALT))
+        entity.update({'user':user,'pwd':pwd_hash})
+        DS.put(entity)
+        return
+    else:
+        print('exist')
+        return False
 
 @app.route('/login',methods = ['GET'])
 def getPwd():
