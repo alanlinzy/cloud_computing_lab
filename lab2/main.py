@@ -61,9 +61,9 @@ def checkCookies(cookie):#unfin
     query.add_filter( id , '=', cookie)
     print(cookie)
     now = datetime.datetime.now()
-
-    if len(query.fetch()) > 0:
-        sess_db = list(query.fetch())
+    sess_db = list(query.fetch())
+    if len(sess_db) > 0:
+        
         print(sess_db)
         if (now - sess_db['exp']).days <=1:#[0]
         
