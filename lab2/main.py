@@ -59,7 +59,8 @@ def fetch_events(limit=None):
 def checkCookies(cookie):#unfin
     if cookie == None:
         return False
-    query = DS.query(kind = USERSESS,cookie)
+    sess_k = DS.key(USERSESS, cookie,parent=USER )
+    query = DS.query(key = sess_k)
     print(cookie)
     now = datetime.datetime.now()
     sess_db = list(query.fetch())
