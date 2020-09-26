@@ -13,6 +13,7 @@ EVENT = 'Event'
 USERINFO = 'Login'
 USERSESS = 'Sess'
 SALT = 10
+EXP = 1
 
 if os.getenv('GAE_ENV','').startswith('standard'):
     ROOT = DS.key('Entities','root')
@@ -57,7 +58,7 @@ def fetch_events(limit=None):
 
 def checkCookies(cookie):#unfin
     query = DS.query(kind = USERSESS)
-    query.add_filter('cookie', '=', cookie)
+    query.add_filter( id , '=', cookie)
     pwd_hash = query.fetch()
     print(pwd_hash)
     return False
@@ -99,8 +100,14 @@ def check_sess(user,pwd_hash):
     query.add_filter('user', '=', user)
     query.add_filter('pwd', '=', pwd_hash)
     sess = list(query.fetch())
-    print(sess)
-    return True
+    now = datetime.datetime.now()
+    print(sess[0]['exp'])
+    if (now - sess[0]['exp']).days <=1:
+        print('valid')
+        return True
+    else:
+           
+        return False
 
 def check_user(user,pwd):#unfin
     pwd_hash = check_exist(user)
@@ -137,11 +144,26 @@ def put_user(user,pwd):
         #Unicode-objects must be encoded before hashing
         pwd_hash = bcrypt.hashpw(pwd.encode("utf8"), bcrypt.gensalt(SALT))
         entity.update({'user':user,'pwd':pwd_hash})
-        DS.put(entity)
-        return True
+        DS.put(entity)        return True
     else:
         print('exist')
         return False
+    
+def put_sess(user,pwd):
+    entity = datastore.Entity(key = DS.key(USERSESS,parent=USER))
+        #Unicode-objects must be encoded before hashing
+    pwd_hash = bcrypt.hashpw(pwd.encode("utf8"), bcrypt.gensalt(SALT))
+    entity.update({'user':user,'pwd':pwd_hash,'exp':datetime.datetime.now()})
+    DS.put(entity)
+    return
+
+def get_sess(user,pwd):
+    query = DS.query(kind = USERSESS)
+    query.add_filter('user', '=', user)
+    query.add_filter('pwd', '=', pwd_hash)
+    sess = list(query.fetch())[0]
+    print(sess)
+    return sess.id
 
 @app.route('/login',methods = ['GET'])
 def getPwd():
@@ -151,7 +173,7 @@ def getPwd():
     payload = []
     content = {}
     for p in pwd:
-        content = {'id':p.id,'user':p['user'],'pwd':p['pwd'].encode("utf8")}
+        content = {'id':p.id,'user':p['user'],'pwd':str(p['pwd'])}
         payload.append(content)
         content = {}
     pwd_l = {'pwds':payload}
@@ -164,9 +186,17 @@ def postLogin():
     print('POST login')
     print(request.json)
     user,pwd = request.json['user'], request.json['pwd']
-    check_user(user,pwd)
-    session = {'session':'cookie','msg':'?'}
-    return redirect('static/index.html',code = 200)
+    if check_user(user,pwd):
+        print('sesson exist')
+        session = get_sess(user,pwd)
+        print(session)
+        return redirect('static/index.html',code = 200)
+    else:
+        put_sess(user,pwd)
+        print('sesson not exist')
+        session = get_sess(user,pwd)
+        print(session)
+        return redirect('static/index.html',code = 200)
 
 @app.route('/register',methods = ['POST'])
 def postRegister():
