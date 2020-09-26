@@ -59,15 +59,21 @@ def fetch_events(limit=None):
 def checkCookies(cookie):#unfin
     query = DS.query(kind = USERSESS)
     query.add_filter( id , '=', cookie)
-    pwd_hash = query.fetch()
-    print(pwd_hash)
-    return False
+    sess_db = list(query.fetch())[0]
+    now = datetime.datetime.now()
+    print(sess_db)
+    if (now - sess_db['exp']).days <=1:
+        
+        return True
+    else:
+        return False
+    
 
 @app.route('/')
 @app.route('/index.html',methods = ['GET'])
 def root():
-    print(request.cookies)
-    if not checkCookies(request.cookies):#check session
+    print(request.cookies.get('sess'))
+    if not checkCookies(request.cookies.get('sess')):#check session
         return redirect('static/login.html',code = 302)
     print('root')
     #return render_template("index.html",user = 'back')  
@@ -218,7 +224,7 @@ def postRegister():
 def postLogout():
     print('POST logout')
     print(request.json)
-    sess = request.cookie
+    sess = request.cookies.get('sess')
     del_sess(sess)
     return redirect('static/login.html',code = 302)
 
