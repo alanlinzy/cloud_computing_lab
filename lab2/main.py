@@ -151,7 +151,7 @@ def getPwd():
     payload = []
     content = {}
     for p in pwd:
-        content = {'id':p.id,'user':p['user'],'pwd':p['pwd']}
+        content = {'id':p.id,'user':p['user'],'pwd':p['pwd'].encode("utf8")}
         payload.append(content)
         content = {}
     pwd_l = {'pwds':payload}
@@ -166,7 +166,7 @@ def postLogin():
     user,pwd = request.json['user'], request.json['pwd']
     check_user(user,pwd)
     session = {'session':'cookie','msg':'?'}
-    return redirect('static/index.html',code = 200, data= session)
+    return redirect('static/index.html',code = 200)
 
 @app.route('/register',methods = ['POST'])
 def postRegister():
