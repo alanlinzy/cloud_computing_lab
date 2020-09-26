@@ -102,7 +102,7 @@ def check_sess(user,pwd_hash):
     sess = list(query.fetch())
     now = datetime.datetime.now()
     print(sess)
-    if (now - sess[0]['exp']).days <=1:
+    if len(sess)>0 and (now - sess[0]['exp']).days <=1:
         print('valid')
         return True
     else:
