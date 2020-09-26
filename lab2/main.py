@@ -150,8 +150,9 @@ def put_user(user,pwd):
     
 def put_sess(user,pwd):
     entity = datastore.Entity(key = DS.key(USERSESS,parent=USER))
-        #Unicode-objects must be encoded before hashing
-    pwd_hash = bcrypt.hashpw(pwd.encode("utf8"), bcrypt.gensalt(SALT))
+    pwd_hash = check_exist(user)
+    #Unicode-objects must be encoded before hashing
+    #pwd_hash = bcrypt.hashpw(pwd.encode("utf8"), bcrypt.gensalt(SALT))
     entity.update({'user':user,'pwd':pwd_hash,'exp':datetime.datetime.now()})
     DS.put(entity)
     return
