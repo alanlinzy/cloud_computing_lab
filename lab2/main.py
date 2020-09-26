@@ -94,28 +94,37 @@ def delEvent():
     delete_event(del_id)
     return ''
 
-def check_user(user,pwd):#unfin
-    check_exist(user)
-    
+def check_sess(user,pwd_hash):
     query = DS.query(kind = USERINFO)
     query.add_filter('user', '=', user)
-    pwd_hash = list(query.fetch())
-    print('pwd_hash',pwd_hash)
-    # vaild? expire? empty?
-    if bcrypt.hashpw(pwd.encode("utf8"), pwd_hash) == pwd_hash:
-        return True
-    else:
+    query.add_filter('pwd', '=', pwd_hash)
+    sess = list(query.fetch())
+    return True
+
+def check_user(user,pwd):#unfin
+    pwd_hash = check_exist(user)
+    if pwd_hash == '':
+        print('not exist')
         return False
+    # vaild? expire? empty?
+    if bcrypt.hashpw(pwd.encode("utf8"), pwd_hash[0]['pwd']) != pwd_hash[0]['pwd']:
+        print('wrong pass')
+        return False
+    if not check_sess(user,pwd_hash):
+        return False
+
+    return True
+    
     
 def check_exist(user):#unfin
     query = DS.query(kind = USERINFO)
     query.add_filter('user', '=', user)
     pwd_hash = list(query.fetch())
     if len(pwd_hash) == 0:
-        return False
+        return ''
     else:
         print(pwd_hash[0]['pwd'])
-        return True
+        return pwd_hash[0]['pwd']
     
 
 def put_user(user,pwd):
@@ -135,7 +144,7 @@ def put_user(user,pwd):
 @app.route('/login',methods = ['GET'])
 def getPwd():
     print('GET  login')
-    query = DS.query(kind = 'User')
+    query = DS.query(kind = USERINFO)
     pwd = query.fetch()
     payload = []
     content = {}
