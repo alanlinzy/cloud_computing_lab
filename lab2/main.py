@@ -147,7 +147,7 @@ def postLogin():
     user,pwd = request.json['user'], request.json['pwd']
     check_user(user,pwd)
     session = {'session':'cookie','msg':'?'}
-    return redirect('static/index.html',code = 200)
+    return redirect('static/index.html',code = 200, response= session)
 
 @app.route('/register',methods = ['POST'])
 def postRegister():
