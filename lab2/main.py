@@ -99,6 +99,7 @@ def check_sess(user,pwd_hash):
     query.add_filter('user', '=', user)
     query.add_filter('pwd', '=', pwd_hash)
     sess = list(query.fetch())
+    print(sess)
     return True
 
 def check_user(user,pwd):#unfin
@@ -111,6 +112,7 @@ def check_user(user,pwd):#unfin
         print('wrong pass')
         return False
     if not check_sess(user,pwd_hash):
+        print('no sess')
         return False
 
     return True
@@ -149,7 +151,7 @@ def getPwd():
     payload = []
     content = {}
     for p in pwd:
-        content = {'id':p.id,'user':p['user'],'pwd':e['pwd']}
+        content = {'id':p.id,'user':p['user'],'pwd':p['pwd']}
         payload.append(content)
         content = {}
     pwd_l = {'pwds':payload}
@@ -164,7 +166,7 @@ def postLogin():
     user,pwd = request.json['user'], request.json['pwd']
     check_user(user,pwd)
     session = {'session':'cookie','msg':'?'}
-    return redirect('static/index.html',code = 200, response= session)
+    return redirect('static/index.html',code = 200, data= session)
 
 @app.route('/register',methods = ['POST'])
 def postRegister():
