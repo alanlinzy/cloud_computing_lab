@@ -209,7 +209,7 @@ def postRegister():
     return ''
 
 @app.route('/logout',methods = ['POST'])
-def postLogin():
+def postLogout():
     print('POST logout')
     print(request.json)
     sess = request.cookie
