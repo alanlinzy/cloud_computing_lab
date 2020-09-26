@@ -62,7 +62,7 @@ def checkCookies(cookie):#unfin
     sess_db = list(query.fetch())[0]
     now = datetime.datetime.now()
     print(sess_db)
-    if (now - sess_db['exp']).days <=1:
+    if sess_db != None and (now - sess_db['exp']).days <=1:
         
         return True
     else:
