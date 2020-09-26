@@ -59,6 +59,7 @@ def checkCookies(cookie):#unfin
     query = DS.query(kind = USERSESS)
     query.add_filter('cookie', '=', cookie)
     pwd_hash = query.fetch()
+    print(pwd_hash)
     return False
 
 @app.route('/')
@@ -94,6 +95,8 @@ def delEvent():
     return ''
 
 def check_user(user,pwd):#unfin
+    check_exist(user)
+    
     query = DS.query(kind = USERINFO)
     query.add_filter('user', '=', user)
     pwd_hash = query.fetch()
@@ -103,8 +106,18 @@ def check_user(user,pwd):#unfin
         return True
     else:
         return False
+    
+def check_exist(user):#unfin
+    query = DS.query(kind = USERINFO)
+    query.add_filter('user', '=', user)
+    pwd_hash = query.fetch()
+    print(pwd_hash[0]['pwd'])
+    return False
+    
 
 def put_user(user,pwd):
+    check_exist(user)
+    
     entity = datastore.Entity(key = DS.key(USERINFO,parent=USER))
     pwd_hash = bcrypt.hashpw(pwd, bcrypt.gensalt(SALT))
     entity.update({'user':user,'pwd':pwd_hash})
@@ -130,7 +143,7 @@ def getPwd():
 @app.route('/login',methods = ['POST'])
 def postLogin():
     print('POST login')
-    print(request.json['user'],request.json['pwd'])
+    print(request.json)
     user,pwd = request.json['user'], request.json['pwd']
     check_user(user,pwd)
     session = {'session':'cookie','msg':'?'}
@@ -140,8 +153,6 @@ def postLogin():
 def postRegister():
     print('POST register')
     print(request.json)
-    print(request.json['pwd'])
-    print(request.json['user'],request.json['pwd'])
     user,pwd = request.json['user'], request.json['pwd']
     put_user(user,pwd)
     return ''
