@@ -47,11 +47,11 @@ async function getlo(){
    const event_div = document.getElementById('pass');
    event_div.innerHTML = '';
    let intext = ''
-   for (let e of JSON.parse(data).events ||[]){
+   for (let p of JSON.parse(data).pwds ||[]){
      
-      intext += "<div class='event' key="+ e['id'] +">" +
-	            "<a class ='ename'>user:"+ e['user'] +"\t</a>"+
-				"<a class ='edate'>pwd:"+ e['pwd'] +"\t</a>"+
+      intext += "<div class='event' key="+ p['id'] +">" +
+	            "<a class ='ename'>user:"+ p['user'] +"\t</a>"+
+				"<a class ='edate'>pwd:"+ p['pwd'] +"\t</a>"+
 				"<\div>\n";
       
    }
