@@ -107,7 +107,7 @@ def check_user(user,pwd):#unfin
         print('not exist')
         return False
     # vaild? expire? empty?
-    if bcrypt.hashpw(pwd.encode("utf8"), pwd_hash[0]['pwd']) != pwd_hash[0]['pwd']:
+    if bcrypt.hashpw(pwd.encode("utf8"), pwd_hash) != pwd_hash:
         print('wrong pass')
         return False
     if not check_sess(user,pwd_hash):
