@@ -142,7 +142,8 @@ def put_user(user,pwd):
         #Unicode-objects must be encoded before hashing
         pwd_hash = bcrypt.hashpw(pwd.encode("utf8"), bcrypt.gensalt(SALT))
         entity.update({'user':user,'pwd':pwd_hash})
-        DS.put(entity)        return True
+        DS.put(entity)
+        return True
     else:
         print('exist')
         return False
@@ -162,6 +163,9 @@ def get_sess(user,pwd):
     sess = list(query.fetch())[0]
     print(sess)
     return sess.id
+
+def del_sess(sess):
+    return 
 
 @app.route('/login',methods = ['GET'])
 def getPwd():
@@ -203,6 +207,14 @@ def postRegister():
     user,pwd = request.json['user'], request.json['pwd']
     put_user(user,pwd)
     return ''
+
+@app.route('/logout',methods = ['POST'])
+def postLogin():
+    print('POST logout')
+    print(request.json)
+    sess = request.cookie
+    del_sess(sess)
+    return redirect('static/index.html',code = 200)
 
 
 if __name__ == '__main__':
