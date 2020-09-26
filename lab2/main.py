@@ -3,7 +3,7 @@ import datetime
 import json
 import bcrypt
 
-from flask import Flask, render_template, request, jsonify,send_from_directory,redirect
+from flask import Flask, render_template, request, jsonify,send_from_directory,redirect,make_response
 from google.cloud import datastore
 
 app = Flask(__name__)
@@ -194,13 +194,17 @@ def postLogin():
         print('sesson exist')
         session = get_sess(user,pwd)
         print(session)
-        return redirect('static/index.html',code = 200)
+        resp = make_response(redirect('static/index.html',code = 302))
+        resp.set_cookie('sess',session)
+        return resp
     else:
         put_sess(user,pwd)
         print('sesson not exist')
         session = get_sess(user,pwd)
         print(session)
-        return redirect('static/index.html',code = 200)
+        resp = make_response(redirect('static/index.html',code = 302))
+        resp.set_cookie('sess',session)
+        return resp
 
 @app.route('/register',methods = ['POST'])
 def postRegister():
@@ -216,7 +220,7 @@ def postLogout():
     print(request.json)
     sess = request.cookie
     del_sess(sess)
-    return redirect('static/index.html',code = 200)
+    return redirect('static/login.html',code = 302)
 
 
 if __name__ == '__main__':
