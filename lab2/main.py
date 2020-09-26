@@ -138,8 +138,6 @@ def check_exist(user):#unfin
 
 def put_user(user,pwd):
     if not check_exist(user):
-        
-    
         entity = datastore.Entity(key = DS.key(USERINFO,parent=USER))
         #Unicode-objects must be encoded before hashing
         pwd_hash = bcrypt.hashpw(pwd.encode("utf8"), bcrypt.gensalt(SALT))
