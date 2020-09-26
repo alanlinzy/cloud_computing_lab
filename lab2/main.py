@@ -99,7 +99,7 @@ def check_user(user,pwd):#unfin
     
     query = DS.query(kind = USERINFO)
     query.add_filter('user', '=', user)
-    pwd_hash = query.fetch()
+    pwd_hash = list(query.fetch())
     print('pwd_hash',pwd_hash)
     # vaild? expire? empty?
     if bcrypt.hashpw(pwd, pwd_hash) == pwd_hash:
@@ -110,7 +110,7 @@ def check_user(user,pwd):#unfin
 def check_exist(user):#unfin
     query = DS.query(kind = USERINFO)
     query.add_filter('user', '=', user)
-    pwd_hash = query.fetch()
+    pwd_hash = list(query.fetch())
     print(pwd_hash[0]['pwd'])
     return False
     
