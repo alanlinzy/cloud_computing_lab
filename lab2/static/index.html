@@ -18,6 +18,8 @@
 <button id = 'createbtn'>create</button>
 
 <div id="events"></div>
+
+<button id = 'logoutbtn'>logout</button>
 </body>
 
 <script>
@@ -88,8 +90,17 @@ document.addEventListener('DOMContentLoaded', () => {
    getsession();
    document.getElementById('createbtn').addEventListener('click',createEvent);
    getEvent();
+   document.getElementById('logoutbtn').addEventListener('click',logout);
    setInterval(renderTimers,1000);
 });
+
+function logout(){
+	await reqJSON('POST','/logout',{
+      cookie:document.cookie,
+
+   });
+
+}
 
 function renderTime(el,now){
    now = now || new Date();
