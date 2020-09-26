@@ -96,7 +96,7 @@ def delEvent():
     return ''
 
 def check_sess(user,pwd_hash):
-    query = DS.query(kind = USERINFO)
+    query = DS.query(kind = USERSESS)
     query.add_filter('user', '=', user)
     query.add_filter('pwd', '=', pwd_hash)
     sess = list(query.fetch())
