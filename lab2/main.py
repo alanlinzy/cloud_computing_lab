@@ -4,9 +4,11 @@ import json
 import bcrypt
 
 from flask import Flask, render_template, request, jsonify,send_from_directory,redirect,make_response
+
 from google.cloud import datastore
 
 app = Flask(__name__)
+
 
 DS = datastore.Client()
 EVENT = 'Event'
@@ -246,8 +248,8 @@ def postLogout():
     print(request.json)
     sess = request.cookies.get('sess')
     del_sess(sess)
-    #resp = make_response(redirect('static/login.html',code = 302))
-    resp = make_response(send_from_directory('static','login.html'))
+    resp = make_response(redirect('static/login.html',code = 302))
+    #resp = make_response(send_from_directory('static','login.html'))
     resp.set_cookie('sess','')
     return resp
 
