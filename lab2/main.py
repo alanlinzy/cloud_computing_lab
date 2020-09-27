@@ -60,12 +60,12 @@ def checkCookies(cookie):#unfin
     if cookie == None:
         return False
     sess_k = DS.key(USERSESS, cookie,parent=USER )
-    query = DS.query(kind = USERSESS)
-    query.GqlQuery('SELECT * FROM ' + USERSESS + 'WHERE id = ' + cookie)
+    #query = DS.query(kind = USERSESS)
+    query = DS.get(sess_k)
     #query.key_filter(sess_k,'=')
     #print(cookie)
     now = datetime.datetime.now()
-    sess_db = list(query.fetch())
+    sess_db = list(query)
     print(sess_db)
     if len(sess_db) > 0:
         if (now - sess_db['exp'].replace(tzinfo = None)).days <=1:#[0]
