@@ -134,14 +134,14 @@ def check_user(user,pwd):#unfin
     pwd_hash = check_exist(user)
     if pwd_hash == '':
         print('not exist')
-        return False
+        return 0
     # vaild? expire? empty?
     if bcrypt.hashpw(pwd.encode("utf8"), pwd_hash) != pwd_hash:
         print('wrong pass')
-        return False
+        return 0
     if not check_sess(user,pwd_hash):
         print('no sess')
-        return False
+        return 1
 
     return True
     
@@ -218,7 +218,8 @@ def postLogin():
     print('POST login')
     print(request.json)
     user,pwd = request.json['user'], request.json['pwd']
-    if check_user(user,pwd):
+    ch = check_user(user,pwd)
+    if ch == 0:
         print('sesson exist')
         session = get_sess(user,pwd)
         print(session)
@@ -229,7 +230,7 @@ def postLogin():
         print(resp)
         #return redirect(url_for('static',filename='index.html'))
         return resp
-    else:
+    elif ch == 1:
         put_sess(user,pwd)
         print('sesson not exist')
         session = get_sess(user,pwd)
@@ -241,6 +242,8 @@ def postLogin():
         print(resp)
         #return redirect(url_for('static',filename='index.html'))
         return resp
+    else:
+        return ''
 
 @app.route('/register',methods = ['POST'])
 def postRegister():
