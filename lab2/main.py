@@ -61,7 +61,7 @@ def checkCookies(cookie):#unfin
         return False
     sess_k = DS.key(USERSESS, cookie,parent=USER )
     query = DS.query(kind = USERSESS)
-    query.GqlQuery('SELECT * FROM ' + USERSESS + 'WHERE id = ' cookie)
+    query.GqlQuery('SELECT * FROM ' + USERSESS + 'WHERE id = ' + cookie)
     #query.key_filter(sess_k,'=')
     #print(cookie)
     now = datetime.datetime.now()
