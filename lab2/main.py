@@ -60,7 +60,8 @@ def checkCookies(cookie):#unfin
     if cookie == None:
         return False
     sess_k = DS.key(USERSESS, cookie,parent=USER )
-    query = DS.query(sess_k)
+    query = DS.query()
+    query.key_filter(sess_k,'=')
     print(cookie)
     now = datetime.datetime.now()
     sess_db = list(query.fetch())
