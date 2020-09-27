@@ -219,25 +219,25 @@ def postLogin():
         print('sesson exist')
         session = get_sess(user,pwd)
         print(session)
-        #resp = make_response(redirect('static/index.html',code = 302))
-        resp = make_response(redirect(url_for('static',filename='index.html')))
+        resp = make_response(redirect('static/index.html',code = 301))
+        #resp = make_response(redirect(url_for('static',filename='index.html')))
         print('redirect main')
         resp.set_cookie('sess',str(session))
         print(resp)
-        return redirect(url_for('static',filename='index.html'))
-        #return resp
+        #return redirect(url_for('static',filename='index.html'))
+        return resp
     else:
         put_sess(user,pwd)
         print('sesson not exist')
         session = get_sess(user,pwd)
         print(session)
-        #resp = make_response(redirect('static/index.html',code = 302))
-        resp = make_response(redirect(url_for('static',filename='index.html')))
+        resp = make_response(redirect('static/index.html',code = 301))
+        #resp = make_response(redirect(url_for('static',filename='index.html')))
         print('redirect main')
         resp.set_cookie('sess',str(session))
         print(resp)
-        return redirect(url_for('static',filename='index.html'))
-        #return resp
+        #return redirect(url_for('static',filename='index.html'))
+        return resp
 
 @app.route('/register',methods = ['POST'])
 def postRegister():
@@ -257,8 +257,8 @@ def postLogout():
     #resp = make_response(send_from_directory('static','login.html'))
     resp.set_cookie('sess','')
     print(resp)
-    return redirect(url_for('static',filename='login.html'))
-    #return resp
+    #return redirect(url_for('static',filename='login.html'))
+    return resp
 
 
 if __name__ == '__main__':
