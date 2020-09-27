@@ -243,7 +243,7 @@ def postLogout():
     sess = request.cookies.get('sess')
     del_sess(sess)
     resp = make_response(redirect('static/login.html',code = 302))
-    resp.set_cookie('sess',None)
+    resp.set_cookie('sess','')
     return resp
 
 
