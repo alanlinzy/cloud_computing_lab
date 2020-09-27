@@ -57,7 +57,7 @@ def fetch_events(limit=None):
     return events
 
 def checkCookies(cookie):#unfin
-    if cookie == None:
+    if cookie == None or cookie == '':
         return False
     sess_k = DS.key(USERSESS, int(cookie),parent=USER )
     #query = DS.query(kind = USERSESS)
@@ -241,7 +241,7 @@ def postLogout():
     sess = request.cookies.get('sess')
     del_sess(sess)
     resp = make_response(redirect('static/login.html',code = 302))
-    resp.set_cookie('sess','')
+    resp.set_cookie('sess',None)
     return resp
 
 
