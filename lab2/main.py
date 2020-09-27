@@ -219,7 +219,7 @@ def postLogin():
         session = get_sess(user,pwd)
         print(session)
         #resp = make_response(redirect('static/index.html',code = 302))
-        resp = make_response(redirect(url_for('static','index.html')))
+        resp = make_response(redirect(url_for('static',filename='index.html')))
         print('redirect main')
         resp.set_cookie('sess',str(session))
         return resp
@@ -229,7 +229,7 @@ def postLogin():
         session = get_sess(user,pwd)
         print(session)
         #resp = make_response(redirect('static/index.html',code = 302))
-        resp = make_response(redirect(url_for('static','index.html')))
+        resp = make_response(redirect(url_for('static',filename='index.html')))
         print('redirect main')
         resp.set_cookie('sess',str(session))
         return resp
@@ -248,7 +248,7 @@ def postLogout():
     print(request.json)
     sess = request.cookies.get('sess')
     del_sess(sess)
-    resp = make_response(redirect(url_for('static','login.html')))
+    resp = make_response(redirect(url_for('static',filename='login.html')))
     #resp = make_response(send_from_directory('static','login.html'))
     resp.set_cookie('sess','')
     return resp
