@@ -225,7 +225,7 @@ def postLogin():
         resp.set_cookie('sess',str(session))
         print(resp)
         return redirect(url_for('static',filename='index.html')
-        return resp
+        #return resp
     else:
         put_sess(user,pwd)
         print('sesson not exist')
@@ -237,7 +237,7 @@ def postLogin():
         resp.set_cookie('sess',str(session))
         print(resp)
         return redirect(url_for('static',filename='index.html')
-        return resp
+        #return resp
 
 @app.route('/register',methods = ['POST'])
 def postRegister():
@@ -257,7 +257,8 @@ def postLogout():
     #resp = make_response(send_from_directory('static','login.html'))
     resp.set_cookie('sess','')
     print(resp)
-    return resp
+    return redirect(url_for('static',filename='login.html'))
+    #return resp
 
 
 if __name__ == '__main__':
