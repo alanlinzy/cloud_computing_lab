@@ -85,6 +85,10 @@ def root():
     #return render_template("index.html",user = 'back')  
     return send_from_directory('static','index.html')
 
+@app.route('/index')
+def index():
+    return ''
+
 @app.route('/events',methods = ['GET'])
 def getEvent():
     print('GET event')
@@ -219,7 +223,7 @@ def postLogin():
         session = get_sess(user,pwd)
         print(session)
         #resp = make_response(redirect('static/index.html',code = 301))
-        resp = make_response(redirect(url_for('getEvent')))
+        resp = make_response(redirect(url_for('index')))
         print('redirect main')
         resp.set_cookie('sess',str(session))
         print(resp)
@@ -231,7 +235,7 @@ def postLogin():
         session = get_sess(user,pwd)
         print(session)
         #resp = make_response(redirect('static/index.html',code = 301))
-        resp = make_response(redirect(url_for('getEvent')))
+        resp = make_response(redirect(url_for('index')))
         print('redirect main')
         resp.set_cookie('sess',str(session))
         print(resp)
