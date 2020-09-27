@@ -77,7 +77,7 @@ def checkCookies(cookie):#unfin
 
 @app.route('/')
 @app.route('/index.html',methods = ['GET'])
-@app.route('static/index.html',methods = ['GET'])
+@app.route('/static/index.html',methods = ['GET'])
 def root():
     print(request.cookies.get('sess'))
     if not checkCookies(request.cookies.get('sess')):#check session
