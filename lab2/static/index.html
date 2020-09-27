@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
    setInterval(renderTimers,1000);
 });
 
-function logout(){
+async function logout(){
 	await reqJSON('POST','/logout',{
       cookie:document.cookie,
 
