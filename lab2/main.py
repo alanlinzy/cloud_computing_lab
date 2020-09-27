@@ -65,7 +65,7 @@ def checkCookies(cookie):#unfin
     #query.key_filter(sess_k,'=')
     #print(cookie)
     now = datetime.datetime.now()
-    sess_db = query
+    sess_db = list(query)
     print(sess_db)
     if len(sess_db) > 0:
         if (now - sess_db['exp'].replace(tzinfo = None)).days <=1:#[0]
