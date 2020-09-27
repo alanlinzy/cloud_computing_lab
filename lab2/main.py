@@ -224,6 +224,7 @@ def postLogin():
         print('redirect main')
         resp.set_cookie('sess',str(session))
         print(resp)
+        return redirect(url_for('static',filename='index.html')
         return resp
     else:
         put_sess(user,pwd)
@@ -235,6 +236,7 @@ def postLogin():
         print('redirect main')
         resp.set_cookie('sess',str(session))
         print(resp)
+        return redirect(url_for('static',filename='index.html')
         return resp
 
 @app.route('/register',methods = ['POST'])
