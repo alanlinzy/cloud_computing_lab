@@ -64,10 +64,11 @@ async function getlo(){
 
 
 async function login(){
-   await reqJSON('POST','/login',{
+   let {data} = await reqJSON('POST','/login',{
       user:document.getElementById('userInput').value,
 	  pwd:document.getElementById('pwdInput').value,
    });
+   window.location.replace(data)
    //await getlo();
 }
 
