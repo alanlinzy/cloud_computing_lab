@@ -184,6 +184,8 @@ def get_sess(user,pwd):
 def del_sess(sess):
     print('DEL event')
     print(sess)
+    if sess == '':
+        return ''
     del_k = DS.key(USERSESS, int(sess),parent=USER )
     DS.delete(del_k)
     return ''
@@ -214,7 +216,8 @@ def postLogin():
         print('sesson exist')
         session = get_sess(user,pwd)
         print(session)
-        resp = make_response(redirect('static/index.html',code = 302))
+        #resp = make_response(redirect('static/index.html',code = 302))
+        resp = make_response(send_from_directory('static','index.html'))
         print('redirect main')
         resp.set_cookie('sess',str(session))
         return resp
@@ -223,7 +226,8 @@ def postLogin():
         print('sesson not exist')
         session = get_sess(user,pwd)
         print(session)
-        resp = make_response(redirect('static/index.html',code = 302))
+        #resp = make_response(redirect('static/index.html',code = 302))
+        resp = make_response(send_from_directory('static','index.html'))
         print('redirect main')
         resp.set_cookie('sess',str(session))
         return resp
@@ -242,7 +246,8 @@ def postLogout():
     print(request.json)
     sess = request.cookies.get('sess')
     del_sess(sess)
-    resp = make_response(redirect('static/login.html',code = 302))
+    #resp = make_response(redirect('static/login.html',code = 302))
+    resp = make_response(send_from_directory('static','login.html'))
     resp.set_cookie('sess','')
     return resp
 
