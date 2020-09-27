@@ -98,9 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
 async function logout(){
 	await reqJSON('POST','/logout',{
       cookie:document.cookie,
-
    });
-
+   location.reload();
 }
 
 function renderTime(el,now){
