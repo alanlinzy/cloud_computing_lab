@@ -87,10 +87,11 @@ async function createEvent(){
 
 
 document.addEventListener('DOMContentLoaded', () => {
-   getsession();
-   document.getElementById('createbtn').addEventListener('click',createEvent);
-   getEvent();
    document.getElementById('logoutbtn').addEventListener('click',logout);
+   document.getElementById('createbtn').addEventListener('click',createEvent);
+   getsession();
+   getEvent();
+   
    setInterval(renderTimers,1000);
 });
 
