@@ -180,7 +180,12 @@ def get_sess(user,pwd):
     return sess.id
 
 def del_sess(sess):
-    return 
+    print('DEL event')
+    print(sess)
+    del_k = DS.key(USERSESS, int(sess),parent=USER )
+    DS.delete(del_k)
+    return ''
+
 
 @app.route('/login',methods = ['GET'])
 def getPwd():
@@ -235,7 +240,9 @@ def postLogout():
     print(request.json)
     sess = request.cookies.get('sess')
     del_sess(sess)
-    return redirect('static/login.html',code = 302)
+    resp = make_response(redirect('static/login.html',code = 302))
+    resp.set_cookie('sess','')
+    return resp
 
 
 if __name__ == '__main__':
