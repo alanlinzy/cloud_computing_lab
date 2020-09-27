@@ -99,7 +99,7 @@ async function logout(){
 	await reqJSON('POST','/logout',{
       cookie:document.cookie,
    });
-   location.reload();
+   window.location.replace('login.html');
 }
 
 function renderTime(el,now){

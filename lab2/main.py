@@ -75,7 +75,7 @@ def checkCookies(cookie):#unfin
     return False
     
 
-#@app.route('/')
+@app.route('/')
 @app.route('/index.html',methods = ['GET'])
 def root():
     print(request.cookies.get('sess'))
