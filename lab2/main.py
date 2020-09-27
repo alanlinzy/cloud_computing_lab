@@ -75,7 +75,7 @@ def checkCookies(cookie):#unfin
     return False
     
 
-@app.route('/')
+#@app.route('/')
 @app.route('/index.html',methods = ['GET'])
 def root():
     print(request.cookies.get('sess'))
@@ -87,7 +87,7 @@ def root():
 
 @app.route('/index')
 def index():
-    return 'index.html'
+    return url_for()
 
 @app.route('/events',methods = ['GET'])
 def getEvent():
@@ -223,7 +223,7 @@ def postLogin():
         session = get_sess(user,pwd)
         print(session)
         #resp = make_response(redirect('static/index.html',code = 301))
-        resp = make_response(redirect(url_for('index',name = 'index.html')))
+        resp = make_response(redirect(url_for('root')))
         print('redirect main')
         resp.set_cookie('sess',str(session))
         print(resp)
@@ -235,7 +235,7 @@ def postLogin():
         session = get_sess(user,pwd)
         print(session)
         #resp = make_response(redirect('static/index.html',code = 301))
-        resp = make_response(redirect(url_for('index',name = 'index.html')))
+        resp = make_response(redirect(url_for('root')))
         print('redirect main')
         resp.set_cookie('sess',str(session))
         print(resp)
