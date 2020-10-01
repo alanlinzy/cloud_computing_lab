@@ -7,11 +7,13 @@ from flask import Flask, render_template, request, jsonify,send_from_directory,r
 
 from google.cloud import datastore
 
+
+
 app = Flask(__name__)
 
 
 DS = datastore.Client()
-EVENT = 'Event'
+
 USERINFO = 'Login'
 USERSESS = 'Sess'
 SALT = 10
@@ -26,17 +28,7 @@ else:
     ROOT = DS.key('Entities','dev')
     USER = DS.key('Entities','user_dev')
     
-def to_json(events):
-    payload = []
-    content = {}
 
-    for e in events:
-        content = {'id':e.id,'name':e['name'],'date':e['date']}
-        payload.append(content)
-        content = {}
-    event_l = {'events':payload}
-    print(json.dumps(event_l))
-    return json.dumps(event_l)
 
 def put_event(name,date_str):
     entity = datastore.Entity(key = DS.key(EVENT,parent=ROOT))
@@ -277,5 +269,29 @@ def postLogout():
     return resp
 
 
+def create_app():
+    app = Flask(__name__)
+
+    app.config['SECRET_KEY'] = os.urandom(16)
+
+    # blueprint for events routes
+    from .events import events as events_blueprint
+    app.register_blueprint(events_blueprint)
+
+    # blueprint for auth routes
+    from .auth import auth as auth_blueprint
+    app.register_blueprint(auth_blueprint)
+
+    # Add default route
+    @app.route('/')
+    def index():
+        return redirect(url_for('events'))
+
+    return app
+
+
+
+
 if __name__ == '__main__':
+    app = create_app()
     app.run(host ='127.0.0.1',port = 8080,debug=True)
