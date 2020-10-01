@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+<title>login</title>
+<
+</head>
+<body>
+
+<form >
+  username: <input type="text" id="userInput">
+  <br>
+  password: <input type="text" id="pwdInput">
+</form>
+<button id = 'loginbtn'>login</button>
+<button id = 'registerbtn'>register</button>
+
+<div id="pass"></div>
+</body>
+
+<script>
+
+
+async function getlo(){
+   let {data} = await reqJSON('GET','/login');
+   const event_div = document.getElementById('pass');
+   event_div.innerHTML = '';
+   let intext = ''
+   for (let p of JSON.parse(data).pwds ||[]){
+     
+      intext += "<div class='event' key="+ p['id'] +">" +
+	            "<a class ='ename'>user:"+ p['user'] +"\t</a>"+
+				"<a class ='edate'>pwd:"+ p['pwd'] +"\t</a>"+
+				"<\div>\n";
+      
+   }
+   //let d = JSON.parse(data).events
+   event_div.innerHTML = intext;
+   renderTimers();
+}
+
+
+
+
+async function login(){
+   await reqJSON('POST','/login',{
+      user:document.getElementById('userInput').value,
+	  pwd:document.getElementById('pwdInput').value,
+   });
+   window.location.replace('index.html');
+   //await getlo();
+}
+
+async function register(){
+   await reqJSON('POST','/register',{
+      user:document.getElementById('userInput').value,
+	  pwd:document.getElementById('pwdInput').value,
+   });
+   await getlo();
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+   document.getElementById('loginbtn').addEventListener('click',login);
+   document.getElementById('registerbtn').addEventListener('click',register);
+   getlo();
+
+});
+
+
+
+</script>
+</html>
