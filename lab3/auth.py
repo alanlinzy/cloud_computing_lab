@@ -188,7 +188,7 @@ def postLogout():
     return resp
 
 @auth.route('/oidcauth', methods=['GET'])
-def g_auth():
+def getAuth():
     if request.args['state'] != request.cookies.get('app_oidc_state'):
         flash('Something went wrong.')
         return redirect(url_for('auth.login'))
