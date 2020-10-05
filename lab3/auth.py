@@ -15,6 +15,7 @@ EVENT = 'Event'
 USERINFO = 'Login'
 USERSESS = 'Sess'
 REDIRECT_URI = 'https://project03zlin32.ue.r.appspot.com/oidcauth'
+#REDIRECT_URI = 'https://8080-cs-513279187698-default.us-central1.cloudshell.dev/'
 CLIENT_ID = DS.get(DS.key('secret', 'oidc'))['client_id']
 STATE = hashlib.sha256(os.urandom(1024)).hexdigest()
 NONCE = hashlib.sha256(os.urandom(1024)).hexdigest()
@@ -71,7 +72,6 @@ def put_user(user,pwd):
 def check_sess(user,pwd_hash):
     query = DS.query(kind = USERSESS)
     query.add_filter('user', '=', user)
-    query.add_filter('pwd', '=', pwd_hash)
     sess = list(query.fetch())
     now = datetime.datetime.now()
     print(sess)
@@ -86,20 +86,19 @@ def check_sess(user,pwd_hash):
     else:
         return False
     
-def put_sess(user,pwd):
+def put_sess(user):
     entity = datastore.Entity(key = DS.key(USERSESS,parent=USER))
     pwd_hash = check_exist(user)
     #Unicode-objects must be encoded before hashing
     #pwd_hash = bcrypt.hashpw(pwd.encode("utf8"), bcrypt.gensalt(SALT))
-    entity.update({'user':user,'pwd':pwd_hash,'exp':datetime.datetime.now()})
+    entity.update({'user':user,'exp':datetime.datetime.now()})
     DS.put(entity)
     return
 
-def get_sess(user,pwd):
+def get_sess(user):
     pwd_hash = check_exist(user)
     query = DS.query(kind = USERSESS)
     query.add_filter('user', '=', user)
-    query.add_filter('pwd', '=', pwd_hash)
     sess = list(query.fetch())[0]
     print(sess)
     return sess.id
@@ -148,7 +147,7 @@ def login():
         cu = check_user(user,pwd)
         if cu == HAVE_SESS:
             print('sesson exist')
-            session = get_sess(user,pwd)
+            session = get_sess(user)
             print(session)
             #resp = make_response(redirect('static/index.html',code = 301))
             resp = make_response(redirect(url_for('events.root')))
@@ -158,9 +157,9 @@ def login():
             #return redirect(url_for('static',filename='index.html'))
             return resp
         elif cu == NO_SESS:
-            put_sess(user,pwd)
+            put_sess(user)
             print('sesson not exist')
-            session = get_sess(user,pwd)
+            session = get_sess(user)
             print(session)
             #resp = make_response(redirect('static/index.html',code = 301))
             resp = make_response(redirect(url_for('events.root')))
@@ -228,13 +227,11 @@ def getAuth():
         u_id = claims['sub']
         q_key = DS.key(USERINFO, u_id)
         user_q = DS.query(kind=USERINFO, ancestor=q_key)
-        return
-'''
+
         for ent in list(user_q.fetch()):
-            if ent['sub']==u_id:
-                put_sess(user,pwd)
-                print('sesson not exist')
-                session = get_sess(user,pwd)
+            if ent['user']==u_id:
+                put_sess(user)
+                session = get_sess(user)
                 print(session)
                 #resp = make_response(redirect('static/index.html',code = 301))
                 resp = make_response(redirect(url_for('events.root')))
@@ -247,15 +244,22 @@ def getAuth():
         with DS.transaction():
             user = datastore.Entity(key=q_key)
             user.update({
-                'sub': u_id,
-                'name': claims['name'],
-                'email': claims['email'],
-                'username': ''
+                'user': u_id,
+                'pwd': DS.get(DS.key('secret', 'oidc'))['client_secret']
             })
             DS.put(user)
 
-        return createSession(u_id)
-'''
+        put_sess(user)
+        session = get_sess(user)
+        print(session)
+        #resp = make_response(redirect('static/index.html',code = 301))
+        resp = make_response(redirect(url_for('events.root')))
+        print('redirect main')
+        resp.set_cookie('sess',str(session))
+        print(resp)
+        #return redirect(url_for('static',filename='index.html'))
+        return resp
+
 def pull_from_discovery(key):
     link = 'https://accounts.google.com/.well-known/openid-configuration'
     f = requests.get(link)
