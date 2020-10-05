@@ -139,8 +139,8 @@ def login():
                 base_uri=pull_from_discovery('authorization_endpoint'),
                 data = data
                             ))
-        res.set_cookie('app_oidc_state', STATE, max_age=(60*60), expires=delta, domain='https://project03zlin32.ue.r.appspot.com', secure=True)
-        res.set_cookie('app_oidc_nonce', NONCE, max_age=(60*60), expires=delta, domain='https://project03zlin32.ue.r.appspot.com', secure=True)
+        res.set_cookie('app_oidc_state', STATE, max_age=(60*60), secure=True)
+        res.set_cookie('app_oidc_nonce', NONCE, max_age=(60*60), secure=True)
         return res
     elif request.method == 'POST':
         print('POST login')
