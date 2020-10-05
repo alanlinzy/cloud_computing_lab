@@ -201,9 +201,10 @@ def postLogout():
 @auth.route('/oidcauth', methods=['GET'])
 def getAuth():
     if request.args['state'] != request.cookies.get('app_oidc_state'):
-        flash('Something went wrong.')
+        print('Something went wrong.')
         return redirect(url_for('auth.login'))
     else:
+        print('oidcauth')
         response = requests.post(pull_from_discovery('token_endpoint'),{
             'code': request.args['code'],
             'client_id': CLIENT_ID,
