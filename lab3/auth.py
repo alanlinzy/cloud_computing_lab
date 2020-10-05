@@ -14,7 +14,7 @@ DS = datastore.Client()
 EVENT = 'Event'
 USERINFO = 'Login'
 USERSESS = 'Sess'
-REDIRECT_URI = 'https://project03zlin32.appspot.com/oidcauth'
+REDIRECT_URI = 'https://project03zlin32.ue.r.appspot.com/oidcauth'
 CLIENT_ID = DS.get(DS.key('secret', 'oidc'))['client_id']
 STATE = hashlib.sha256(os.urandom(1024)).hexdigest()
 NONCE = hashlib.sha256(os.urandom(1024)).hexdigest()
@@ -139,8 +139,8 @@ def login():
                 base_uri=pull_from_discovery('authorization_endpoint'),
                 data = data
                             ))
-        res.set_cookie('app_oidc_state', STATE, max_age=(60*60), expires=delta, domain='project03zlin32.appspot.com', secure=True)
-        res.set_cookie('app_oidc_nonce', NONCE, max_age=(60*60), expires=delta, domain='project03zlin32.appspot.com', secure=True)
+        res.set_cookie('app_oidc_state', STATE, max_age=(60*60), expires=delta, domain='https://project03zlin32.ue.r.appspot.com', secure=True)
+        res.set_cookie('app_oidc_nonce', NONCE, max_age=(60*60), expires=delta, domain='https://project03zlin32.ue.r.appspot.com', secure=True)
         return res
     elif request.method == 'POST':
         print('POST login')
