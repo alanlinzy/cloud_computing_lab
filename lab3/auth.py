@@ -200,11 +200,14 @@ def postLogout():
 
 @auth.route('/oidcauth', methods=['GET'])
 def getAuth():
+    print('oidcauth')
+    print(request.cookies.get('app_oidc_state'))
+    print(request.args['state'])
     if request.args['state'] != request.cookies.get('app_oidc_state'):
         print('Something went wrong.')
         return redirect(url_for('auth.login'))
     else:
-        print('oidcauth')
+        
         response = requests.post(pull_from_discovery('token_endpoint'),{
             'code': request.args['code'],
             'client_id': CLIENT_ID,
@@ -221,10 +224,12 @@ def getAuth():
         claims = json.loads(urlsafe_b64decode(body.encode('utf-8')))
 
         # Check datastore for user, than register or login.
+        print(claims)
         u_id = claims['sub']
         q_key = DS.key(USERINFO, u_id)
         user_q = DS.query(kind=USERINFO, ancestor=q_key)
-
+        return
+'''
         for ent in list(user_q.fetch()):
             if ent['sub']==u_id:
                 put_sess(user,pwd)
@@ -250,7 +255,7 @@ def getAuth():
             DS.put(user)
 
         return createSession(u_id)
-
+'''
 def pull_from_discovery(key):
     link = 'https://accounts.google.com/.well-known/openid-configuration'
     f = requests.get(link)
