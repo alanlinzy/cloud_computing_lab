@@ -14,8 +14,13 @@ EVENT = 'Event'
 USERINFO = 'Login'
 USERSESS = 'Sess'
 REDIRECT_URI = 'https://project03zlin32.appspot.com/oidcauth'
+CLIENT_ID = DS.get(DS.key('secret', 'oidc'))['client_id']
 STATE = hashlib.sha256(os.urandom(1024)).hexdigest()
 NONCE = hashlib.sha256(os.urandom(1024)).hexdigest()
+NO_USER = 0
+WRONG_PASS = 1
+NO_SESS = 2
+HAVE_SESS = 3
 
 if os.getenv('GAE_ENV','').startswith('standard'):
     EVE = DS.key('Entities','event_root')
@@ -36,18 +41,19 @@ def check_exist(user):
     
 def check_user(user,pwd):
     pwd_hash = check_exist(user)
+    # no user 0; wrong pass 1; no sess;2 true 3
     if pwd_hash == '':
         print('not exist')
-        return 'wrong'
+        return NO_USER
     # vaild? expire? empty?
     if bcrypt.hashpw(pwd.encode("utf8"), pwd_hash) != pwd_hash:
         print('wrong pass')
-        return 'wrong'
+        return WRONG PASS
     if not check_sess(user,pwd_hash):
         print('no sess')
-        return 'pass'
+        return NO_SESS
 
-    return True
+    return HAVE_SESS
 
 def put_user(user,pwd):
     if not check_exist(user):
@@ -59,6 +65,24 @@ def put_user(user,pwd):
         return True
     else:
         print('exist')
+        return False
+
+def check_sess(user,pwd_hash):
+    query = DS.query(kind = USERSESS)
+    query.add_filter('user', '=', user)
+    query.add_filter('pwd', '=', pwd_hash)
+    sess = list(query.fetch())
+    now = datetime.datetime.now()
+    print(sess)
+    if len(sess)==0:
+        return False
+    exp = sess[0]['exp'].replace(tzinfo = None)#TypeError: can't subtract offset-naive and offset-aware datetimes
+    print(exp)
+    
+    if (now - exp).hours <=1:
+        print('valid')
+        return True
+    else:
         return False
     
 def put_sess(user,pwd):
@@ -120,48 +144,34 @@ def login():
     elif request.method == 'POST':
         print('POST login')
         user,pwd = request.json['user'], request.json['pwd']
-        ch = check_user(user,pwd)
-        if ch == 'wrong':
+        cu = check_user(user,pwd)
+        if cu == HAVE_SESS:
             print('sesson exist')
             session = get_sess(user,pwd)
             print(session)
             #resp = make_response(redirect('static/index.html',code = 301))
-            resp = make_response(redirect('/static/index.html'))
+            resp = make_response(redirect(url_for('events.root')))
             print('redirect main')
             resp.set_cookie('sess',str(session))
             print(resp)
             #return redirect(url_for('static',filename='index.html'))
             return resp
-        elif ch == 'pass':
+        elif cu == NO_SESS:
             put_sess(user,pwd)
             print('sesson not exist')
             session = get_sess(user,pwd)
             print(session)
             #resp = make_response(redirect('static/index.html',code = 301))
-            resp = make_response(redirect('/static/index.html'))
+            resp = make_response(redirect(url_for('events.root')))
             print('redirect main')
             resp.set_cookie('sess',str(session))
             print(resp)
             #return redirect(url_for('static',filename='index.html'))
             return resp
         else:
-            return ''
-        
-        # Find u_id in Users Datastore
-        key = DS.key('Users', u_id)
-        entity = DS.query(kind='Users', ancestor=key).fetch()
-        for ent in list(entity):
-            # hash pwd and compare to Users['password']
-            if ent['username'] == u_id and ent['password'] == pwd_stretch(password, ent['password']):
-                return createSession(u_id)
-            else:
-                flash("Username or password is incorrect. Please try again")
-                return redirect(url_for('auth.login'))
-        else:
-            flash("Username or password does not match our records. Please try again")
             return redirect(url_for('auth.login'))
-    else:
-        console.log('Unexpected request during login: %s' %(request.method))
+        
+    
 
         
 @auth.route('/register',methods = ['POST'])
@@ -200,7 +210,7 @@ def getAuth():
             'redirect_uri': REDIRECT_URI,
             'grant_type': 'authorization_code'
         })
-
+        print(response)
         # Parse JWT using code from lab document
         j_token = response.json()
         id_token = j_token['id_token']
@@ -210,12 +220,22 @@ def getAuth():
 
         # Check datastore for user, than register or login.
         u_id = claims['sub']
-        q_key = DS.key('Users', u_id)
-        user_q = DS.query(kind='Users', ancestor=q_key)
+        q_key = DS.key(USERINFO, u_id)
+        user_q = DS.query(kind=USERINFO, ancestor=q_key)
 
         for ent in list(user_q.fetch()):
             if ent['sub']==u_id:
-                return createSession(u_id)
+                put_sess(user,pwd)
+                print('sesson not exist')
+                session = get_sess(user,pwd)
+                print(session)
+                #resp = make_response(redirect('static/index.html',code = 301))
+                resp = make_response(redirect(url_for('events.root')))
+                print('redirect main')
+                resp.set_cookie('sess',str(session))
+                print(resp)
+                #return redirect(url_for('static',filename='index.html'))
+                return resp
             #else:
         with DS.transaction():
             user = datastore.Entity(key=q_key)
@@ -228,3 +248,9 @@ def getAuth():
             DS.put(user)
 
         return createSession(u_id)
+
+def pull_from_discovery(key):
+    link = 'https://accounts.google.com/.well-known/openid-configuration'
+    f = requests.get(link)
+    d = f.json()
+    return d[key]
