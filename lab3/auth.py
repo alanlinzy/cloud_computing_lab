@@ -3,6 +3,7 @@ import datetime
 import json
 import bcrypt
 import requests
+import hashlib
 
 from flask import Flask,Blueprint,render_template, request, jsonify,send_from_directory,redirect,make_response,url_for,flash
 from base64 import b64encode, urlsafe_b64decode
