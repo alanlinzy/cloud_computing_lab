@@ -1,144 +1,16 @@
 <!doctype html>
 <html>
 <head>
-<title>My App</title>
-<style>
-.delbtn{
-    color: blueviolet;
-    text-align: center;
-}
-</style>
+<title>Event Countdown</title>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.7.1.min.js"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></link>
 </head>
 <body>
-
-<form >
-  Event name: <input type="text" id="nameInput">
-  date: <input type="text" id="dateInput">
-</form>
-<button id = 'createbtn'>create</button>
-
-<div id="events"></div>
-
-<button id = 'logoutbtn'>logout</button>
+<div id="main" class="mainDiv">
+  <a href="{{url_for('auth.logout')}}">Logout</a>
+  {% block content %}
+  {% endblock %}
+</div>
 </body>
-
-<script>
-
-
-
-}
-async function getEvent(){
-   let {data} = await reqJSON('GET','/events');
-   const event_div = document.getElementById('events');
-   event_div.innerHTML = '';
-   let intext = ''
-   for (let e of JSON.parse(data).events ||[]){
-      if (isPast(e['date'])){
-	     console.log('Date' + e['date'] + 'is in past. skipping');
-		 continue;
-	  }
-      intext += "<div class='event' key="+ e['id'] +">" +
-	            "<a class ='ename'>name:"+ e['name'] +"\t</a>"+
-				"<a class ='edate'>date:"+ e['date'] +"\t</a>"+
-				"<a class ='timer' date = "+ e['date'] +" ></a>"+
-				"<button class= 'delbtn'  onclick = \'delEvent("+ e['id'] +")\'>delete</button>"+
-				"<\div>\n";
-      
-   }
-   //let d = JSON.parse(data).events
-   event_div.innerHTML = intext;
-   renderTimers();
-}
-
-
-async function delEvent(key){
-   await reqJSON('DELETE','/event',{id:key});
-   await getEvent();
-}
-
-async function createEvent(){
-   await reqJSON('POST','/event',{
-      name:document.getElementById('nameInput').value,
-	  date:document.getElementById('dateInput').value,
-   });
-   await getEvent();
-}
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-   document.getElementById('logoutbtn').addEventListener('click',logout);
-   document.getElementById('createbtn').addEventListener('click',createEvent);
-   //getsession();
-   getEvent();
-   
-   setInterval(renderTimers,1000);
-});
-
-async function logout(){
-	await reqJSON('POST','/logout',{
-      cookie:document.cookie,
-   });
-   window.location.replace('login.html');
-}
-
-function renderTime(el,now){
-   now = now || new Date();
-   const date = parseDate(el.getAttribute('date'));
-   const countdown = countdownStringTo(date);
-   if (countdown == null){
-      return false;
-   }
-   el.innerText = countdown;
-   return true;
-}
-
-function renderTimers(){
-   const a_s = document.querySelectorAll('a.timer');
-   const now = new Date();
-   for (let el of a_s){
-      if (isPast(el.getAttribute('date'))){
-	     el.parentNode.style.display = 'none';
-		 continue;
-	  }
-	  renderTime(el,now);
-   
-   }
-
-}
-
-function countdownStringTo(date){
-  let secs = Math.floor((date - new Date())/1000);
-  if (secs <0){
-     return null;
-  }
-  let mins = Math.floor(secs/60);
-  secs %=60;
-  
-  let hours = Math.floor(mins/60);
-  mins %=60;
-
-  let days = Math.floor(hours/60);
-  hours %=24;
-  
-  let units = [days,hours,mins,secs];
-  while (units.length>0 && units[0]===0){
-     units.shift();
-  }
-  return units.map(u => (u < 10? '0':'') + u).join(':');
-}
-
-function isPast(date_str){
-   const date = (typeof date_str ==='string') ? parseDate(date_str):date_str;
-   return date - new Date() < 0;
-
-}
-
-function parseDate(datestr) {
-  const [y, m, d] = datestr.split('-');
-  return new Date(Number.parseInt(y), Number.parseInt(m)-1, Number.parseInt(d));
-}
-
-
-</script>
 </html>
