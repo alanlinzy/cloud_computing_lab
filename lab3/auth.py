@@ -146,6 +146,7 @@ def login():
         print('POST login')
         user,pwd = request.json['user'], request.json['pwd']
         cu = check_user(user,pwd)
+        expired = datetime.datetime.now() + datetime.timedelta(hours=1)
         if cu == HAVE_SESS:
             print('sesson exist')
             session = get_sess(user)
@@ -153,7 +154,7 @@ def login():
             #resp = make_response(redirect('static/index.html',code = 301))
             resp = make_response(redirect(url_for('events.root')))
             print('redirect main')
-            resp.set_cookie('sess',str(session))
+            resp.set_cookie('sess',str(session), expires=expired, secure=True)
             print(resp)
             #return redirect(url_for('static',filename='index.html'))
             return resp
@@ -165,7 +166,7 @@ def login():
             #resp = make_response(redirect('static/index.html',code = 301))
             resp = make_response(redirect(url_for('events.root')))
             print('redirect main')
-            resp.set_cookie('sess',str(session))
+            resp.set_cookie('sess',str(session), expires=expired, secure=True)
             print(resp)
             #return redirect(url_for('static',filename='index.html'))
             return resp
@@ -180,8 +181,21 @@ def postRegister():
     print('POST register')
     print(request.json)
     user,pwd = request.json['user'], request.json['pwd']
-    put_user(user,pwd)
-    return ''
+    result = put_user(user,pwd)
+    if result == True:
+        return redirect(url_for('auth.login'))
+    expired = datetime.datetime.now() + datetime.timedelta(hours=1)
+    put_sess(user)
+    print('sesson not exist')
+    session = get_sess(user)
+    print(session)
+    #resp = make_response(redirect('static/index.html',code = 301))
+    resp = make_response(redirect(url_for('events.root')))
+    print('redirect main')
+    resp.set_cookie('sess',str(session), expires=expired, secure=True)
+    print(resp)
+    #return redirect(url_for('static',filename='index.html'))
+    return resp
 
 @auth.route('/logout',methods = ['POST'])
 def postLogout():
