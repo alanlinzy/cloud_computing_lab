@@ -230,8 +230,8 @@ def getAuth():
 
         for ent in list(user_q.fetch()):
             if ent['user']==u_id:
-                put_sess(user)
-                session = get_sess(user)
+                put_sess(u_id)
+                session = get_sess(u_id)
                 print(session)
                 #resp = make_response(redirect('static/index.html',code = 301))
                 resp = make_response(redirect(url_for('events.root')))
@@ -249,8 +249,8 @@ def getAuth():
             })
             DS.put(user)
 
-        put_sess(user)
-        session = get_sess(user)
+        put_sess(u_id)
+        session = get_sess(u_id)
         print(session)
         #resp = make_response(redirect('static/index.html',code = 301))
         resp = make_response(redirect(url_for('events.root')))
