@@ -27,21 +27,21 @@ else:
 def login_check(sess):
 
     print(sess)
-    if sess:
-        query_key = DS.key(USERSESS,int(sess))
-        query = list(DS.query(kind = USERSESS,ancestor = query_key).fetch())
-        for i in query:
-            print(i)
-            if user != i['user'] or (datetime.datetime.now() - sess_db['exp'].replace(tzinfo = None)).hours >=1:
-                print('expired')
-                return redirect(url_for('auth.logout'))
-            else:
-                return SUCCESS
-    else:
+    if sess == None or sess == '' or len(sess) == 0:
         print('please login')
         return redirect(url_for('auth.login'))
-    print('error')
-    return redirect(url_for('auth.login'))
+    
+    query_key = DS.key(USERSESS,int(sess))
+    query = list(DS.query(kind = USERSESS,ancestor = query_key).fetch())
+    for i in query:
+        print(i)
+        if user != i['user'] or (datetime.datetime.now() - sess_db['exp'].replace(tzinfo = None)).hours >=1:
+            print('expired')
+            return redirect(url_for('auth.logout'))
+        else:
+            return SUCCESS
+
+    
 
             
 
