@@ -114,6 +114,7 @@ def del_sess(sess):
     return ''
 
 @auth.route('/login', methods=['GET', 'POST'])
+@auth.route('/login.html', methods=['GET', 'POST'])
 def login():
     if request.method=='GET':
         print('GET  login')
