@@ -38,8 +38,8 @@ def login_check(sess):
         if user != i['user'] or (datetime.datetime.now() - sess_db['exp'].replace(tzinfo = None)).hours >=1:
             print('expired')
             return redirect(url_for('auth.logout'))
-        else:
-            return SUCCESS
+        
+    return SUCCESS
    
 
 def put_event(name,date_str):
