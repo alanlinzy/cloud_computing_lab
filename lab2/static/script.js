@@ -1,24 +1,22 @@
-/**
- * Copyright 2018, Google LLC
- * Licensed under the Apache License, Version 2.0 (the `License`);
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an `AS IS` BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
- 
-// [START gae_python38_log]
-'use strict';
-
-window.addEventListener('load', function () {
-
-  console.log("Hello World!");
-
-});
-// [END gae_python38_log]
+function reqJSON(method, url, data) {
+  return new Promise((resolve, reject) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+	xhr.setRequestHeader('Content-type','application/json')
+    xhr.responseType = 'json';
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve({status: xhr.status, statusText:xhr.statusText, data: xhr.response});
+      } else {
+	    console.error('xhr with error:',xhr);
+        reject({status: xhr.status, statusText:xhr.statusText, data: xhr.response});
+      }
+    };
+    xhr.onerror = () => {
+	  console.error('xhr with error:',xhr);
+      reject({status: xhr.status,statusText:xhr.statusText, data: xhr.response});
+    };
+    xhr.send(JSON.stringify(data));
+	//xhr.send(data);
+  });
+}

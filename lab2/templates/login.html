@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>login</title>
-<
+<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></link>
 </head>
 <body>
 
@@ -16,10 +16,8 @@
 
 <div id="pass"></div>
 </body>
-
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 <script>
-
-
 function reqJSON(method, url, data) {
   return new Promise((resolve, reject) => {
     let xhr = new XMLHttpRequest();
@@ -42,6 +40,7 @@ function reqJSON(method, url, data) {
 	//xhr.send(data);
   });
 }
+
 async function getlo(){
    let {data} = await reqJSON('GET','/login');
    const event_div = document.getElementById('pass');
