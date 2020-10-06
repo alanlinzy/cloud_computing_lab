@@ -193,7 +193,7 @@ def postLogout():
     #resp = make_response(send_from_directory('static','login.html'))
     resp.set_cookie('sess','')
     resp.set_cookie('app_oidc_nonce', '')
-    res.set_cookie('app_oidc_state','')
+    resp.set_cookie('app_oidc_state','')
     print(resp)
     #return redirect(url_for('static',filename='login.html'))
     return resp
