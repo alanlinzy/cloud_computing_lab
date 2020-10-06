@@ -25,7 +25,7 @@ app.register_blueprint(auth_blueprint)
 def index():
     return redirect(url_for('events'))
 
-return app
+
 
 
 
