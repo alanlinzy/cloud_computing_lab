@@ -26,12 +26,13 @@ else:
 def login_check(func):
     @wraps(func)
     def wrapper(*args,**kwargs):
-        user = request.cookies.get('user')
         sess = request.cookies.get('sess')
-        if user:
+        print(sess)
+        if sess:
             query_key = DS.key(USERSESS,int(sess))
             query = list(DS.query(kind = USERSESS,ancestor = query_key).fetch())
             for i in query:
+                print(i)
                 if user != i['user'] or (datetime.datetime.now() - sess_db['exp'].replace(tzinfo = None)).hours >=1:
                     flash('expired')
                     return redirect(url_for('auth.logout'))
