@@ -88,7 +88,7 @@ def check_sess(user,pwd_hash):
     
 def put_sess(user):
     entity = datastore.Entity(key = DS.key(USERSESS,parent=USER))
-    pwd_hash = check_exist(user)
+    #pwd_hash = check_exist(user)
     #Unicode-objects must be encoded before hashing
     #pwd_hash = bcrypt.hashpw(pwd.encode("utf8"), bcrypt.gensalt(SALT))
     entity.update({'user':user,'exp':datetime.datetime.now()})
@@ -96,7 +96,7 @@ def put_sess(user):
     return
 
 def get_sess(user):
-    pwd_hash = check_exist(user)
+    #pwd_hash = check_exist(user)
     query = DS.query(kind = USERSESS)
     query.add_filter('user', '=', user)
     sess = list(query.fetch())[0]
