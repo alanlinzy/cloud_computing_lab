@@ -158,6 +158,10 @@ def postRegister():
     if result == True:
         return redirect(url_for('auth.login'))
     expired = datetime.datetime.now() + datetime.timedelta(hours=1)
+    
+    if u_id == 'migrate_user':
+        migrate_data(user)
+    
     put_sess(user)
     print('sesson not exist')
     session = get_sess(user)
@@ -185,4 +189,15 @@ def postLogout():
     return resp
 
 
-
+def migrate_data(user):
+    if ser == 'migrate_user':
+        new_key = DS.key(EVENT, user)
+        old_q = DS.query(kind=EVENT, ancestor=EVE)
+        for val in list(old_q.fetch()):
+            ent = datastore.Entity(key=DS.key(EVENT, parent=new_key))
+            ent.update({
+                'Name': val['Name'],
+                'Date': val['Date']
+            })
+            DS.put(ent)
+            DS.delete(val.key)   #Delete event under old key
