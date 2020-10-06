@@ -81,11 +81,10 @@ def check_sess(user,pwd_hash):
     exp = sess[0]['exp'].replace(tzinfo = None)#TypeError: can't subtract offset-naive and offset-aware datetimes
     print(exp)
     
-    if (now - exp).hours <=1:
-        print('valid')
-        return True
-    else:
+    if  exp <= now - datetime.timedelta(hours=1):
         return False
+    print('valid')
+    return True
     
 def put_sess(user):
     entity = datastore.Entity(key = DS.key(USERSESS,parent=USER))

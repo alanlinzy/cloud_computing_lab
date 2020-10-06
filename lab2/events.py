@@ -35,7 +35,7 @@ def login_check(sess):
     query = list(DS.query(kind = USERSESS,ancestor = query_key).fetch())
     for i in query:
         print(i)
-        if user != i['user'] or (datetime.datetime.now() - sess_db['exp'].replace(tzinfo = None)).hours >=1:
+        if user != i['user'] or (datetime.datetime.now() - datetime.timedelta(hours=1)) > sess_db['exp'].replace(tzinfo = None):
             print('expired')
             return redirect(url_for('auth.logout'))
         
