@@ -14,6 +14,7 @@ events = Blueprint('events', __name__)
 DS = datastore.Client()
 EVENT = 'Event'
 USERSESS = 'Sess'
+SUCCESS = 0
 
 if os.getenv('GAE_ENV','').startswith('standard'):
     EVE = DS.key('Entities','event_root')
@@ -22,28 +23,26 @@ else:
     EVE = DS.key('Entities','event_dev')
     USER = DS.key('Entities','user_dev')
 
-#decorator to check login
-def login_check(func):
-    @wraps(func)
-    def wrapper(*args,**kwargs):
-        sess = request.cookies.get('sess')
-        print(sess)
-        if sess:
-            query_key = DS.key(USERSESS,int(sess))
-            query = list(DS.query(kind = USERSESS,ancestor = query_key).fetch())
-            for i in query:
-                print(i)
-                if user != i['user'] or (datetime.datetime.now() - sess_db['exp'].replace(tzinfo = None)).hours >=1:
-                    flash('expired')
-                    return redirect(url_for('auth.logout'))
-                else:
-                    return func(*args,**kwargs)
-        else:
-            flash('please login')
-            return redirect(url_for('auth.login'))
-        flash('error')
+# check login
+def login_check(sess):
+
+    print(sess)
+    if sess:
+        query_key = DS.key(USERSESS,int(sess))
+        query = list(DS.query(kind = USERSESS,ancestor = query_key).fetch())
+        for i in query:
+            print(i)
+            if user != i['user'] or (datetime.datetime.now() - sess_db['exp'].replace(tzinfo = None)).hours >=1:
+                print('expired')
+                return redirect(url_for('auth.logout'))
+            else:
+                return SUCCESS
+    else:
+        print('please login')
         return redirect(url_for('auth.login'))
-    return wrapper
+    print('error')
+    return redirect(url_for('auth.login'))
+
             
 
 def put_event(name,date_str):
@@ -69,15 +68,25 @@ def fetch_events(limit=None):
     return events
 
 @events.route('/')
-@login_check
+@events.route('/index')
 def root():
+    sess = request.cookies.get('sess')
+    result = login_check(sess)
+    if result != SUCCESS:
+        return result
     #return render_template("index.html",user = 'back')  
     return render_template('events.html', data=getEvent())
+        
 
 @events.route('/events',methods = ['GET'])
-@login_check
 def getEvent():
     print('GET event')
+    
+    sess = request.cookies.get('sess')
+    result = login_check(sess)
+    if result != SUCCESS:
+        return result
+    
     events = fetch_events()
     payload = []
     content = {}
@@ -91,18 +100,28 @@ def getEvent():
     return jsonify(data)
 
 @events.route('/event',methods = ['POST'])
-@login_check
 def postEvent():
     print('POST event')
+    
+    sess = request.cookies.get('sess')
+    result = login_check(sess)
+    if result != SUCCESS:
+        return result
+
     name,date = request.json['name'], request.json['date']
     print(name,date)
     put_event(name,date)
     return ''
 
 @events.route('/event',methods = ['DELETE'])
-@login_check
 def delEvent():
     print('DEL event')
+
+    sess = request.cookies.get('sess')
+    result = login_check(sess)
+    if result != SUCCESS:
+        return result
+    
     del_id = request.json['id']
     delete_event(del_id)
     return getEvent()
