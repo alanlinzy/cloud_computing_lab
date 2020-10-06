@@ -40,10 +40,7 @@ def login_check(sess):
             return redirect(url_for('auth.logout'))
         else:
             return SUCCESS
-
-    
-
-            
+   
 
 def put_event(name,date_str):
     entity = datastore.Entity(key = DS.key(EVENT,parent=EVE ))
@@ -75,7 +72,7 @@ def root():
     if result != SUCCESS:
         return result
     #return render_template("index.html",user = 'back')  
-    return render_template('events.html', data=getEvent())
+    return render_template('index.html')
         
 
 @events.route('/events',methods = ['GET'])
