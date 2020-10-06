@@ -23,6 +23,7 @@ NO_USER = 0
 WRONG_PASS = 1
 NO_SESS = 2
 HAVE_SESS = 3
+SALT = 10
 
 if os.getenv('GAE_ENV','').startswith('standard'):
     EVE = DS.key('Entities','event_root')
