@@ -14,11 +14,7 @@ DS = datastore.Client()
 EVENT = 'Event'
 USERINFO = 'Login'
 USERSESS = 'Sess'
-REDIRECT_URI = 'https://project03zlin32.ue.r.appspot.com/oidcauth'
-#REDIRECT_URI = 'https://8080-cs-513279187698-default.us-central1.cloudshell.dev/'
-CLIENT_ID = DS.get(DS.key('secret', 'oidc'))['client_id']
-STATE = hashlib.sha256(os.urandom(1024)).hexdigest()
-NONCE = hashlib.sha256(os.urandom(1024)).hexdigest()
+
 NO_USER = 0
 WRONG_PASS = 1
 NO_SESS = 2
