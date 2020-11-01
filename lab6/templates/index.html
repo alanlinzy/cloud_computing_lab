@@ -1,0 +1,62 @@
+
+<html>
+<head>
+<title>count path</title>
+<style>
+div{
+    text-align: center;
+}
+</style>
+</head>
+<body>
+<div id="main" class="mainDiv">
+  <h1>Path Count</h1>
+  <div class="container" id="table_div">
+  <div id="path_count"></div>
+  </div>
+</div>
+</body>
+<script>
+
+function reqJSON(method, url, data) {
+  return new Promise((resolve, reject) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+	xhr.setRequestHeader('Content-type','application/json')
+    xhr.responseType = 'json';
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve({status: xhr.status, statusText:xhr.statusText, data: xhr.response});
+      } else {
+	    console.error('xhr with error:',xhr);
+        reject({status: xhr.status, statusText:xhr.statusText, data: xhr.response});
+      }
+    };
+    xhr.onerror = () => {
+	  console.error('xhr with error:',xhr);
+      reject({status: xhr.status,statusText:xhr.statusText, data: xhr.response});
+    };
+    xhr.send(JSON.stringify(data));
+	//xhr.send(data);
+  });
+}
+
+async function getCount(){
+   let {data} = await reqJSON('GET','/count');
+   const path_div = document.getElementById('path_count');
+   path_div.innerHTML = '';
+   let intext = '<tr><th><h3>Paths</h3></th><th><h3>Count</h3></th></tr>';
+   for (let e of JSON.parse(data).counts ||[]){
+   
+      intext += '<tr><td>'+e['path']+'</td><td>'+e['count']+'</td></tr>';
+      
+   }
+   //let d = JSON.parse(data).events
+   event_div.innerHTML = intext;
+   
+}
+document.addEventListener('DOMContentLoaded', () => {
+   getEvent();
+});
+</script>
+</html>
