@@ -28,6 +28,7 @@ def count():
     
     
 def count_path(path):
+    print('count_path')
     sql = """INSERT INTO pathcount (path, count)
                 VALUES (%s, 1)
              ON CONFLICT (path) DO UPDATE
@@ -35,7 +36,7 @@ def count_path(path):
              RETURNING count;"""
     conn = None
     try:
-        conn = psycopg2.connect(host=host ,database=database, user=user, password=password)
+        #conn = psycopg2.connect(host=host ,database=database, user=user, password=password)
         cur = conn.cursor()
         cur.execute(sql, (path,))
         conn.commit()
@@ -48,16 +49,18 @@ def count_path(path):
 
 
 def query():
+    print('query')
     sql = """SELECT path, count FROM pathcount ORDER BY path"""
     conn = None
     try:
-        conn = psycopg2.connect(host=host ,database=database, user=user, password=password)
+        #conn = psycopg2.connect(host=host ,database=database, user=user, password=password)
         cur = conn.cursor()
         cur.execute(sql)
         data = cur.fetchall()
         conn.commit()
         cur.close()
     except Exception as e:
+        data= [['/',9],['/counts',2]]
         print(e)
     finally:
         if conn is not None:

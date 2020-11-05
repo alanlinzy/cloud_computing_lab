@@ -11,7 +11,7 @@ div{
 <body>
 <div id="main" class="mainDiv">
   <h1>Path Count</h1>
-  <div class="container" id="table_div">
+
   <div id="path_count"></div>
   </div>
 </div>
@@ -42,21 +42,22 @@ function reqJSON(method, url, data) {
 }
 
 async function getCount(){
-   let {data} = await reqJSON('GET','/count');
+   let {data} = await reqJSON('GET','/counts');
    const path_div = document.getElementById('path_count');
    path_div.innerHTML = '';
-   let intext = '<tr><th><h3>Paths</h3></th><th><h3>Count</h3></th></tr>';
+   //var paths = JSON.parse('{{ data | safe }}');
+   let intext = '<tr><th><h3>Paths</th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<th>Count</h3></th></tr>';
    for (let e of JSON.parse(data).counts ||[]){
-   
-      intext += '<tr><td>'+e['path']+'</td><td>'+e['count']+'</td></tr>';
+   //for (let x of paths) {
+      intext += '<tr><td>'+e['path']+'</td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<td>'+e['count']+'</td></tr><br>';
       
    }
    //let d = JSON.parse(data).events
-   event_div.innerHTML = intext;
+   path_div.innerHTML = intext;
    
 }
 document.addEventListener('DOMContentLoaded', () => {
-   getEvent();
+   getCount();
 });
 </script>
 </html>
